@@ -1,9 +1,6 @@
 package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
-
-import com.sun.tools.javac.Main;
-import java.io.Reader;
 import java.util.Scanner;
 import spark.Spark;
 
@@ -14,17 +11,21 @@ import spark.Spark;
  * achieved through the use of a run script.
  */
 public class Server {
-  private Scanner scanner;
-  private Reader filepath;
-
-  public static void Server(String[] args) {
-    new Main().run();
-  }
   private String[] args;
+  private Scanner scanner;
+  public String filepath;
 
-  private void Main(String[] args) {
+  public Server(String[] args) {
     this.args = args;
   }
+
+  public Server() {}
+
+  public static void main(String[] args) {
+    Server server = new Server(args);
+    server.run();
+  }
+
   private void run() {
     int port = 3232;
     Spark.port(port);
@@ -36,9 +37,9 @@ public class Server {
         });
 
     // Setting up the handler for the GET /order and /activity endpoints
-    Spark.get("loadcsv", new LoadHandler());
-    Spark.init();
-    Spark.awaitInitialization();
+    //    Spark.get("loadcsv", new LoadHandler());
+    //    Spark.init();
+    //    Spark.awaitInitialization();
 
     System.out.println("Server started at http://localhost:" + port);
   }

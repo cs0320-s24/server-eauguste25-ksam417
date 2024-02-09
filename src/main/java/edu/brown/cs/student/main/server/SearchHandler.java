@@ -6,6 +6,10 @@ import spark.Response;
 import spark.Route;
 
 /** Endpoint which sends back rows matching the given search criteria. */
+
+// Instantiate the search object, and then pass reader into the server file path
+
+// SearchCSV
 public class SearchHandler implements Route {
 
   @Override

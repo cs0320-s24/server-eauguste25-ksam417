@@ -19,6 +19,9 @@ import spark.Route;
  * one CSV file to another by making additional calls to loadcsv.
  */
 public class LoadHandler<T> implements Route {
+
+  String filepath = new Server().filepath;
+
   // get the name of the filepath you are searching for
   // update variable in search class
   // the only thing that changes for view would be dependent on the filepath
@@ -32,7 +35,7 @@ public class LoadHandler<T> implements Route {
     // Deserializes JSON into a loadcsv
     Set<String> params = request.queryParams();
     // requests the filepath
-    String filepath = request.queryParams("filepath");
+    this.filepath = request.queryParams("filepath");
     Reader fileReader = new FileReader(filepath);
 
     LoadCSV loadCSV = new LoadCSV(fileReader);
