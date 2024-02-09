@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import java.io.Reader;
 import java.util.Scanner;
 import spark.Spark;
 
@@ -13,6 +14,7 @@ import spark.Spark;
  */
 public class Server {
   private Scanner scanner;
+  private Reader filepath;
 
   public static void main(String[] args) {
     int port = 3232;

@@ -19,6 +19,10 @@ import spark.Route;
  * one CSV file to another by making additional calls to loadcsv.
  */
 public class LoadHandler<T> implements Route {
+  // get the name of the filepath you are searching for
+  // update variable in search class
+  // the only thing that changes for view would be dependent on the filepath
+  // load would update and view and search would use the information from that variable
 
 
 
@@ -27,7 +31,7 @@ public class LoadHandler<T> implements Route {
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
     // Sends a request to the API and receives JSON back
-    // Deserializes JSON into an Activity
+    // Deserializes JSON into a loadcsv
     Set<String> params = request.queryParams();
     // requests the filepath
     String filepath = request.queryParams("filepath");
@@ -52,6 +56,7 @@ public class LoadHandler<T> implements Route {
   }
 
   private String sendRequest(int i) {
-    return ;
+    //TODO: implement this method
+    return "";
   }
 }
