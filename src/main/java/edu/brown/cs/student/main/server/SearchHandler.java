@@ -9,7 +9,7 @@ import spark.Route;
 
 // Instantiate the search object, and then pass reader into the server file path
 
-// SearchCSV
+// SearchCSV searchCSV = new SearchCSV(new Reader());
 public class SearchHandler implements Route {
 
   @Override
