@@ -3,8 +3,8 @@ package edu.brown.cs.student.main;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import edu.brown.cs.student.main.csv.Parser;
 import edu.brown.cs.student.main.Interfaces.CreatorFromRow;
+import edu.brown.cs.student.main.csv.Parser;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -107,9 +107,7 @@ public class TestParser<T> {
       System.out.println("File not found");
     }
   }
-  /**
-   * Tests the new csv file for Sprint 2
-   */
+  /** Tests the new csv file for Sprint 2 */
   @Test
   public void testNewCSV() throws IOException {
     this.filename =
@@ -119,6 +117,5 @@ public class TestParser<T> {
     Parser<T> csvReader = new Parser<>(this.filename);
     List<List<String>> result = csvReader.parseUser();
     assertEquals(41, result.size()); // number of rows
-
   }
 }

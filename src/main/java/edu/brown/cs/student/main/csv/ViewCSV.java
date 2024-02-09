@@ -1,5 +1,3 @@
 package edu.brown.cs.student.main.csv;
 
-public class ViewCSV {
-
-}
+public class ViewCSV {}

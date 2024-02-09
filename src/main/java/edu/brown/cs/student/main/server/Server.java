@@ -7,11 +7,10 @@ import spark.Spark;
 
 /**
  * A command-line entry point is intended to start the server (i.e. clicking the green play button),
- * displaying minimal output, such as “Server started” and an instructional line.
- * In addition to the API features above, a command-line entry point should be integrated in your
- * project. This will be achieved through the use of a run script.
+ * displaying minimal output, such as “Server started” and an instructional line. In addition to the
+ * API features above, a command-line entry point should be integrated in your project. This will be
+ * achieved through the use of a run script.
  */
-
 public class Server {
   private Scanner scanner;
 
@@ -25,11 +24,13 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
+    // Setting up the handler for the GET /order and /activity endpoints
+    Spark.get("loadcsv", new LoadHandler());
+    Spark.init();
+    Spark.awaitInitialization();
+
     System.out.println("Server started at http://localhost:" + port);
-
   }
 
-  private void run() {
-
-  }
+  private void run() {}
 }
