@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import com.sun.tools.javac.Main;
 import java.io.Reader;
 import java.util.Scanner;
 import spark.Spark;
@@ -16,7 +17,15 @@ public class Server {
   private Scanner scanner;
   private Reader filepath;
 
-  public static void main(String[] args) {
+  public static void Server(String[] args) {
+    new Main().run();
+  }
+  private String[] args;
+
+  private void Main(String[] args) {
+    this.args = args;
+  }
+  private void run() {
     int port = 3232;
     Spark.port(port);
 
@@ -33,6 +42,4 @@ public class Server {
 
     System.out.println("Server started at http://localhost:" + port);
   }
-
-  private void run() {}
 }

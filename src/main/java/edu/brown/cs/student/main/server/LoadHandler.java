@@ -24,8 +24,6 @@ public class LoadHandler<T> implements Route {
   // the only thing that changes for view would be dependent on the filepath
   // load would update and view and search would use the information from that variable
 
-
-
   @Override
   public Object handle(Request request, Response response) throws Exception {
     // Creates a hashmap to store the results of the request
@@ -56,7 +54,7 @@ public class LoadHandler<T> implements Route {
   }
 
   private String sendRequest(int i) {
-    //TODO: implement this method
+    // TODO: implement this method
     return "";
   }
 }
