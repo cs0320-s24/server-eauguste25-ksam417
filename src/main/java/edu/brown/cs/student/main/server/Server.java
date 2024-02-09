@@ -2,7 +2,6 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import java.io.Reader;
 import java.util.Scanner;
 import spark.Spark;
 
