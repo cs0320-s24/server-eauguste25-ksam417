@@ -1,6 +1,8 @@
 package edu.brown.cs.student.main.server;
 
 /** Criteria */
+import edu.brown.cs.student.main.csv.DataSource;
+import edu.brown.cs.student.main.csv.Parser;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -11,6 +13,13 @@ import spark.Route;
 
 // SearchCSV searchCSV = new SearchCSV(new Reader());
 public class SearchHandler implements Route {
+  private DataSource source;
+  private Parser parser;
+  private String filepath = new Server().filepath;
+
+  public SearchHandler(DataSource source) {
+    this.source = source;
+  }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {

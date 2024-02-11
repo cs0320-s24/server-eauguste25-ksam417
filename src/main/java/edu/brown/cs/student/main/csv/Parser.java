@@ -72,7 +72,7 @@ public class Parser<T> {
    * @return a List of objects representing rows in a CSV file
    * @throws FactoryFailureException
    */
-  public List<T> parseDeveloper() throws FactoryFailureException {
+  public List<T> parse() throws FactoryFailureException {
     if (this.creator == null) {
       throw new FactoryFailureException("CreatorFromRow is not initialized", null);
     }
