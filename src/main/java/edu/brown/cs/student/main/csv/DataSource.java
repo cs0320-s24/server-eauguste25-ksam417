@@ -7,7 +7,7 @@ import java.io.Reader;
 import java.util.List;
 
 public class DataSource {
-  private List<List<String>> csvData;
+  private List<List<String>> CSVData;
   private boolean isLoaded;
   private String filepath;
   private Search searcher;
@@ -17,15 +17,19 @@ public class DataSource {
       Reader reader = new FileReader(filePath);
       CreatorFromRow<List<String>> creator = new MakeList();
       Parser CSVParser = new Parser(reader);
-      this.csvData = CSVParser.parse();
+      this.CSVData = CSVParser.parse();
       this.isLoaded = true;
       return true;
     } catch (Exception e) {
-      if (this.csvData == null) {
+      if (this.CSVData == null) {
         throw new Exception("File does not exist");
       }
       // Handle the by throwing a custom expression that is more informative at runtime
       throw new FileNotFoundException(e.getMessage());
     }
+  }
+
+  public List<List<String>> getCSVData() {
+    return this.CSVData;
   }
 }
