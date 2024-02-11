@@ -1,17 +1,18 @@
 package edu.brown.cs.student.main.server;
 
 /** Criteria */
-import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
-import com.squareup.moshi.Types;
+import edu.brown.cs.student.main.csv.CSVAPIUtilities;
 import edu.brown.cs.student.main.csv.DataSource;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ import spark.Route;
  * <p>No more than one CSV file should be loaded at a time, but it should be possible to change from
  * one CSV file to another by making additional calls to loadcsv.
  */
-public class LoadHandler<T> implements Route {
+public class LoadHandler implements Route {
 
   private String filepath = new Server().filepath;
   private DataSource source;
@@ -46,28 +47,37 @@ public class LoadHandler<T> implements Route {
     // requests the filepath
     this.filepath = request.queryParams("filepath");
     Reader fileReader = new FileReader(this.filepath);
-      try {
-        Boolean isLoaded = this.source.loadCSV(this.filepath);
-        if (isLoaded) {
-          responseMap.put("type", "success");
-        }
-        // Sends a request to the API and receives JSON back
-        // Adds results to the responseMap
+    try {
+      Boolean isLoaded = this.source.loadCSV(this.filepath);
+      if (isLoaded) {
+        String filepathJson = this.sendRequest(Integer.parseInt(this.filepath));
+        this.source = CSVAPIUtilities.deserializeActivity(filepathJson);
 
-        return responseMap;
-      } catch (Exception e) {
-        e.printStackTrace();
-        // Adds results to the responseMap
-        responseMap.put("result", "success");
+        responseMap.put("type", "success");
+        responseMap.put("filepath", filepath);
         return responseMap;
       }
+      // Sends a request to the API and receives JSON back
+      // Adds results to the responseMap
+    } catch (Exception e) {
+      e.printStackTrace();
+      // Adds results to the responseMap
+      responseMap.put("result", "success");
+      return responseMap;
     }
+    return responseMap;
+  }
 
-  private String sendRequest(int i) {
-    HttpRequest buildAPIRequest =
-        HttpRequest.newBuilder()
-            .uri(new URI("http://localhost:" + port))
-            .GET()
-            .build();
+  private String sendRequest(int i) throws URISyntaxException, IOException, InterruptedException {
+    HttpRequest buildApiRequest =
+        HttpRequest.newBuilder().uri(new URI("http://localhost:3232")).GET().build();
+
+    HttpResponse<String> sentApiResponse =
+        HttpClient.newBuilder().build().send(buildApiRequest, HttpResponse.BodyHandlers.ofString());
+
+    System.out.println(sentApiResponse);
+    System.out.println(sentApiResponse.body());
+
+    return sentApiResponse.body();
   }
 }
