@@ -10,6 +10,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -44,36 +46,28 @@ public class LoadHandler<T> implements Route {
     // requests the filepath
     this.filepath = request.queryParams("filepath");
     Reader fileReader = new FileReader(this.filepath);
+      try {
+        Boolean isLoaded = this.source.loadCSV(this.filepath);
+        if (isLoaded) {
+          responseMap.put("type", "success");
+        }
+        // Sends a request to the API and receives JSON back
+        // Adds results to the responseMap
 
-    try {
-      Boolean isLoaded = this.source.loadCSV(this.filepath);
-      if (isLoaded) {
-        responseMap.put("type", "success");
+        return responseMap;
+      } catch (Exception e) {
+        e.printStackTrace();
+        // Adds results to the responseMap
+        responseMap.put("result", "success");
+        return responseMap;
       }
-      return responseMap;
-    } catch (IOException e) {
-      responseMap.put("type", "error");
-      responseMap.put("error_type", "error_datasource");
-      responseMap.put("details", e.getMessage());
-      return responseMap;
     }
-  }
-  //    try {
-  //      // Sends a request to the API and receives JSON back
-  //      // Adds results to the responseMap
-  //      responseMap.put("result", "success");
-  //
-  //      return responseMap;
-  //    } catch (Exception e) {
-  //      e.printStackTrace();
-  //      // Adds results to the responseMap
-  //      responseMap.put("result", "success");
-  //      return responseMap;
-  //    }
-  //  }
 
   private String sendRequest(int i) {
-    // TODO: implement this method
-    return "";
+    HttpRequest buildAPIRequest =
+        HttpRequest.newBuilder()
+            .uri(new URI("http://localhost:" + port))
+            .GET()
+            .build();
   }
 }
