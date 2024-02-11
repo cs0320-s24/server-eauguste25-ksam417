@@ -28,9 +28,7 @@ public class CSVAPIUtilities {
 
       return source;
     }
-    // Returns an empty DataSource... Probably not the best handling of this error case...
-    // Notice an alternative error throwing case to the one done in OrderHandler. This catches
-    // the error instead of pushing it up.
+    // Returns an empty DataSource...
     catch (IOException e) {
       e.printStackTrace();
       return new DataSource();
