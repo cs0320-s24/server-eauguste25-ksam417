@@ -1,7 +1,6 @@
 package edu.brown.cs.student.main.server;
 
 /** Criteria */
-
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import edu.brown.cs.student.main.csv.DataSource;
@@ -49,8 +48,7 @@ public class LoadHandler implements Route {
       if (isLoaded) {
         responseMap.put("type", "success");
         responseMap.put("filepath", filepath);
-      }
-      else {
+      } else {
         responseMap.put("type", "error");
         responseMap.put("message", "Failed to load CSV file");
       }
@@ -61,5 +59,4 @@ public class LoadHandler implements Route {
     }
     return responseMap;
   }
-
 }

@@ -61,7 +61,6 @@ public class SearchHandler implements Route {
         responseMap.put("type", "success");
         responseMap.put("searchterm", searchTerm);
         responseMap.put("matching rows: ", matchingRows);
-
       }
       // Sends a request to the API and receives JSON back
       // Adds results to the responseMap
@@ -77,11 +76,10 @@ public class SearchHandler implements Route {
     return responseMap;
   }
 
-  private String sendRequest(String searchTerm) throws URISyntaxException, IOException, InterruptedException {
+  private String sendRequest(String searchTerm)
+      throws URISyntaxException, IOException, InterruptedException {
     HttpRequest buildApiRequest =
-        HttpRequest.newBuilder().uri(new URI("http://localhost:3232" + searchTerm))
-            .GET()
-            .build();
+        HttpRequest.newBuilder().uri(new URI("http://localhost:3232" + searchTerm)).GET().build();
 
     HttpResponse<String> sentApiResponse =
         HttpClient.newBuilder().build().send(buildApiRequest, HttpResponse.BodyHandlers.ofString());

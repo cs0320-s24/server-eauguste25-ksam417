@@ -1,5 +1,6 @@
 package edu.brown.cs.student.main.csv;
 
+import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Interfaces.CreatorFromRow;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,8 +14,9 @@ public class DataSource {
   private Search searcher;
 
   public boolean loadCSV(String filePath) throws Exception {
+    this.filepath = filePath;
     try {
-      Reader reader = new FileReader(filePath);
+      Reader reader = new FileReader(filepath);
       CreatorFromRow<List<String>> creator = new MakeList();
       Parser CSVParser = new Parser(reader);
       this.CSVData = CSVParser.parse();
@@ -29,7 +31,17 @@ public class DataSource {
     }
   }
 
-  public List<List<String>> getCSVData() {
-    return this.CSVData;
+  public List<List<String>> getCSVData() throws FactoryFailureException, FileNotFoundException {
+    try {
+      Reader reader = new FileReader(filepath);
+      CreatorFromRow<List<String>> creator = new MakeList();
+      Parser CSVParser = new Parser(reader);
+      this.CSVData = CSVParser.parse();
+      return this.CSVData;
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(e);
+    } catch (FactoryFailureException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

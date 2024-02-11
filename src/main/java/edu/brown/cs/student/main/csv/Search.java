@@ -14,8 +14,8 @@ public class Search<T> {
   /**
    * This constructor is when the user provides us with a column identifier
    *
-   * @param parsedData       the parsed data from the csv file
-   * @param searchTerm       the term being searched for in the csv file
+   * @param parsedData the parsed data from the csv file
+   * @param searchTerm the term being searched for in the csv file
    * @param columnIdentifier the identifier representing a specific column in the csv file
    */
   public Search(List<List<String>> parsedData, String searchTerm, String columnIdentifier)
@@ -46,8 +46,8 @@ public class Search<T> {
   /**
    * Constructor for searching by column index
    *
-   * @param parsedData  the parsed data from the csv file
-   * @param searchTerm  the term being searched for in the csv file
+   * @param parsedData the parsed data from the csv file
+   * @param searchTerm the term being searched for in the csv file
    * @param columnIndex the index representing a specific column in the csv file
    */
   public Search(List<List<String>> parsedData, String searchTerm, int columnIndex)
@@ -65,7 +65,7 @@ public class Search<T> {
    * searched does not exist, search the rest of the csv file for any matching rows
    *
    * @return A list of lists of strings representing the rows that have the matching value being
-   * searched for
+   *     searched for
    */
   public List<List<String>> search() {
     List<List<String>> result = new ArrayList<>();
