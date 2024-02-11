@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DataSource {
   private List<List<String>> CSVData;
-  private boolean isLoaded;
+  public boolean isLoaded;
   private String filepath;
   private Search searcher;
 
