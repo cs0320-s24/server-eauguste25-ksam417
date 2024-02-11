@@ -14,8 +14,8 @@ public class Search<T> {
   /**
    * This constructor is when the user provides us with a column identifier
    *
-   * @param parsedData the parsed data from the csv file
-   * @param searchTerm the term being searched for in the csv file
+   * @param parsedData       the parsed data from the csv file
+   * @param searchTerm       the term being searched for in the csv file
    * @param columnIdentifier the identifier representing a specific column in the csv file
    */
   public Search(List<List<String>> parsedData, String searchTerm, String columnIdentifier)
@@ -46,8 +46,8 @@ public class Search<T> {
   /**
    * Constructor for searching by column index
    *
-   * @param parsedData the parsed data from the csv file
-   * @param searchTerm the term being searched for in the csv file
+   * @param parsedData  the parsed data from the csv file
+   * @param searchTerm  the term being searched for in the csv file
    * @param columnIndex the index representing a specific column in the csv file
    */
   public Search(List<List<String>> parsedData, String searchTerm, int columnIndex)
@@ -65,9 +65,9 @@ public class Search<T> {
    * searched does not exist, search the rest of the csv file for any matching rows
    *
    * @return A list of lists of strings representing the rows that have the matching value being
-   *     searched for
+   * searched for
    */
-  public List<List<String>> searchWithHeader() {
+  public List<List<String>> search() {
     List<List<String>> result = new ArrayList<>();
     // this loops through to find the index of the passed in column identifier
     if (columnIdentifier != null) {
@@ -126,42 +126,6 @@ public class Search<T> {
       }
     }
     // if there are no matching rows
-    if (result.isEmpty()) {
-      System.out.println(
-          "The search term: "
-              + "'"
-              + this.searchTerm
-              + "'"
-              + " was not found in the parsed data. Please try again.");
-    }
-    return result;
-  }
-
-  /**
-   * This method searches for the phrase in all the read and parsed CSV data
-   *
-   * @return a List of Lists of String representing the rows that have the matching value
-   */
-  public List<List<String>> searchWithoutHeader() {
-    // saves the rows which contain the value we are looking for in the list result
-    List<List<String>> result = new ArrayList<>();
-    for (List<String> row : this.parsedDataUser) {
-      // sets matchFound to false until a match is found within a row
-      boolean matchFound = false;
-      for (String word : row) {
-        word = word.toLowerCase().strip().replaceAll("[\"']", "");
-        // if a match is found, set matchFound to true
-        if (word.equals(this.searchTerm.toLowerCase().strip().replaceAll("[\"']", ""))) {
-          matchFound = true;
-          break;
-        }
-      }
-      if (matchFound) {
-        // adds the matching row to the result list
-        result.add(row);
-      }
-    }
-    // if there are no rows in the result list after searching the entire csv file
     if (result.isEmpty()) {
       System.out.println(
           "The search term: "

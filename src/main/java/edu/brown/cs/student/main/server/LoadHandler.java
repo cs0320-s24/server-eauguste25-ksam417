@@ -1,18 +1,12 @@
 package edu.brown.cs.student.main.server;
 
 /** Criteria */
+
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
-import edu.brown.cs.student.main.csv.CSVAPIUtilities;
 import edu.brown.cs.student.main.csv.DataSource;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -47,37 +41,25 @@ public class LoadHandler implements Route {
     // requests the filepath
     this.filepath = request.queryParams("filepath");
     Reader fileReader = new FileReader(this.filepath);
-    try {
-      Boolean isLoaded = this.source.loadCSV(this.filepath);
-      if (isLoaded) {
-        String filepathJson = this.sendRequest(Integer.parseInt(this.filepath));
-        this.source = CSVAPIUtilities.deserializeActivity(filepathJson);
 
+    try {
+      // load the csv file
+      Boolean isLoaded = this.source.loadCSV(this.filepath);
+
+      if (isLoaded) {
         responseMap.put("type", "success");
         responseMap.put("filepath", filepath);
-        return responseMap;
       }
-      // Sends a request to the API and receives JSON back
-      // Adds results to the responseMap
+      else {
+        responseMap.put("type", "error");
+        responseMap.put("message", "Failed to load CSV file");
+      }
     } catch (Exception e) {
       e.printStackTrace();
-      // Adds results to the responseMap
-      responseMap.put("result", "success");
-      return responseMap;
+      responseMap.put("type", "error");
+      responseMap.put("message", e.getMessage());
     }
     return responseMap;
   }
 
-  private String sendRequest(int i) throws URISyntaxException, IOException, InterruptedException {
-    HttpRequest buildApiRequest =
-        HttpRequest.newBuilder().uri(new URI("http://localhost:3232")).GET().build();
-
-    HttpResponse<String> sentApiResponse =
-        HttpClient.newBuilder().build().send(buildApiRequest, HttpResponse.BodyHandlers.ofString());
-
-    System.out.println(sentApiResponse);
-    System.out.println(sentApiResponse.body());
-
-    return sentApiResponse.body();
-  }
 }
