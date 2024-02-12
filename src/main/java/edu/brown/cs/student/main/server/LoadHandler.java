@@ -44,7 +44,6 @@ public class LoadHandler implements Route {
     try {
       // load the csv file
       Boolean isLoaded = this.source.loadCSV(this.filepath);
-
       if (isLoaded) {
         responseMap.put("type", "success");
         responseMap.put("filepath", filepath);

@@ -7,18 +7,28 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.List;
 
-public class DataSource {
+public class DataSource<T> {
+
   private List<List<String>> CSVData;
   public boolean isLoaded;
   private String filepath;
   private Search searcher;
 
+  public DataSource(String filePath) {
+    this.filepath = filePath;
+  }
+
+  public DataSource() {
+  }
+
   public boolean loadCSV(String filePath) throws Exception {
     this.filepath = filePath;
     try {
       Reader reader = new FileReader(filepath);
-      CreatorFromRow<List<String>> creator = new MakeList();
-      Parser CSVParser = new Parser(reader);
+      // CreatorFromRow<List<String>> creator = new MakeList();
+      CreatorFromRow<T> rowObject = new RetListString<>();
+
+      Parser CSVParser = new Parser(rowObject, reader);
       this.CSVData = CSVParser.parse();
       this.isLoaded = true;
       return true;
@@ -32,16 +42,6 @@ public class DataSource {
   }
 
   public List<List<String>> getCSVData() throws FactoryFailureException, FileNotFoundException {
-    try {
-      Reader reader = new FileReader(filepath);
-      CreatorFromRow<List<String>> creator = new MakeList();
-      Parser CSVParser = new Parser(reader);
-      this.CSVData = CSVParser.parse();
-      return this.CSVData;
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (FactoryFailureException e) {
-      throw new RuntimeException(e);
-    }
+    return this.CSVData;
   }
 }

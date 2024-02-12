@@ -46,9 +46,9 @@ public class Server {
 
     // Setting up the handler for the GET /order and /activity endpoints
 
-    DataSource source = new DataSource();
-    //    Spark.get("searchcsv", new SearchHandler(source));
-    Spark.get("viewcsv", new ViewHandler(source));
+//    DataSource source = new DataSource();
+//    //    Spark.get("searchcsv", new SearchHandler(source));
+//    Spark.get("viewcsv", new ViewHandler(source));
     Spark.get("loadcsv", new LoadHandler());
     Spark.init();
     Spark.awaitInitialization();
@@ -63,10 +63,11 @@ public class Server {
     System.out.println("What is the path of the file you are searching?");
     String csvPath = scanner.nextLine();
     try {
-      DataSource source = new DataSource();
+      DataSource source = new DataSource(csvPath);
       Boolean isLoaded = source.loadCSV(csvPath);
       if (isLoaded) {
         List<List<String>> data = source.getCSVData();
+        this.parsedData = data;
       } else {
         System.out.println("The CSV file was unable to be loaded, please try again.");
       }
