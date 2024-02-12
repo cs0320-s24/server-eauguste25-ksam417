@@ -43,11 +43,11 @@ public class LoadHandler implements Route {
 
     try {
       // load the csv file
-      Boolean isLoaded = this.source.loadCSV(this.filepath);
+      this.source.loadCSV(this.filepath);
 
-      if (isLoaded) {
+      if (this.source.isLoaded) {
         responseMap.put("type", "success");
-        responseMap.put("filepath", filepath);
+        responseMap.put("filepath", this.filepath);
       } else {
         responseMap.put("type", "error");
         responseMap.put("message", "Failed to load CSV file");
