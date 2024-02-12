@@ -2,4 +2,4 @@ package edu.brown.cs.student.main.csv;
 
 import java.util.List;
 
-public record ResponseMap(List<List<String>> dataSource) {}
+public record InternetData(List<List<String>> dataSource) {}
