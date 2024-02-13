@@ -1,12 +1,12 @@
 package edu.brown.cs.student.main.Server.Handlers;
 
 /** Criteria */
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
-import edu.brown.cs.student.main.Server.Server;
+import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.csv.DataSource;
-import java.io.FileReader;
-import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,19 +22,10 @@ import spark.Route;
  */
 public class LoadHandler implements Route {
 
-  private String filepath = new Server().filepath;
   private DataSource source;
 
-  /**
-   * Constructs a LoadHandler with the specified file path and CSVDataSource.
-   *
-   * @param filePath The file path of the CSV file to be loaded.
-   * @param source The CSVDataSource instance used to load the CSV file.
-   */
-  public LoadHandler(String filePath, DataSource source) {
-    this.filepath = filePath;
-    this.source = source;
-  }
+  /** Constructs a LoadHandler with the specified file path and CSVDataSource. */
+  public LoadHandler() {}
 
   public LoadHandler() {}
 
@@ -45,32 +36,40 @@ public class LoadHandler implements Route {
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
+
+    String filePath = request.queryParams("filePath");
+
+    Moshi moshi = new Builder().build();
+
+    Type stringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
+
+    JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(stringObject);
+
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
-    Moshi moshi = new Builder().build();
+
+    this.source.loadCSV(filePath);
+
     // Sends a request to the API and receives JSON back
     // Deserializes JSON into a loadcsv
     Set<String> params = request.queryParams();
     // requests the filepath
-    this.filepath = request.queryParams("filepath");
-    Reader fileReader = new FileReader(this.filepath);
 
     try {
-      this.source.loadCSV(this.filepath);
 
       if (this.source.isLoaded) {
         responseMap.put("type", "success");
-        responseMap.put("filepath", this.filepath);
+        responseMap.put("filepath", filePath);
       } else {
         responseMap.put("type", "error");
-        responseMap.put("message", "Failed to load CSV file");
+        responseMap.put("details", "Failed to load CSV file");
       }
     } catch (Exception e) {
-      e.printStackTrace();
       responseMap.put("type", "error");
-      responseMap.put("message", e.getMessage());
+      responseMap.put("details", e.getMessage());
+      return jsonAdapter.toJson(responseMap);
     }
-    return responseMap;
+    return jsonAdapter.toJson(responseMap);
   }
 
 }

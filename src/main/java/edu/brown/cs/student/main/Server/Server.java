@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.csv.DataSource;
@@ -47,11 +48,24 @@ public class Server {
     // Setting up the handler for the GET /order and /activity endpoints
 
     DataSource source = new DataSource();
+
     //    Spark.get("searchcsv", new SearchHandler(source));
     Spark.get("viewcsv", new ViewHandler(source));
     Spark.get("loadcsv", new LoadHandler());
     Spark.init();
     Spark.awaitInitialization();
+
+
+    try {
+      Spark.get("viewcsv", new ViewHandler());
+      Spark.get("loadcsv", new LoadHandler());
+      Spark.init();
+      Spark.awaitInitialization();
+    } catch (Exception e) {
+
+    }
+    //    Spark.get("searchcsv", new SearchHandler(source));
+
 
     System.out.println("Server started at http://localhost:" + port);
   }
