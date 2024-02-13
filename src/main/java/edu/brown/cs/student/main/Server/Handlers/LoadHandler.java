@@ -36,6 +36,8 @@ public class LoadHandler implements Route {
     this.source = source;
   }
 
+  public LoadHandler() {}
+
   // get the name of the filepath you are searching for
   // update variable in search class
   // the only thing that changes for view would be dependent on the filepath
@@ -70,4 +72,5 @@ public class LoadHandler implements Route {
     }
     return responseMap;
   }
+
 }
