@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import edu.brown.cs.student.main.Interfaces.CreatorFromRow;
-import edu.brown.cs.student.main.csv.Parser;
+import edu.brown.cs.student.main.csv.Parser.Parser;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;

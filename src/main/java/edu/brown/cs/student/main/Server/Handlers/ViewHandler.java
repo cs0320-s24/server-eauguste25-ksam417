@@ -1,9 +1,10 @@
-package edu.brown.cs.student.main.server;
+package edu.brown.cs.student.main.Server.Handlers;
 
 /** Criteria */
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+import edu.brown.cs.student.main.Server.Server;
 import edu.brown.cs.student.main.csv.DataSource;
 import java.util.HashMap;
 import java.util.List;

@@ -1,12 +1,11 @@
-package edu.brown.cs.student.main.server;
+package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
+import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
 import edu.brown.cs.student.main.csv.DataSource;
 import edu.brown.cs.student.main.csv.Search;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import spark.Spark;
@@ -46,12 +45,12 @@ public class Server {
 
     // Setting up the handler for the GET /order and /activity endpoints
 
-//    DataSource source = new DataSource();
-//    //    Spark.get("searchcsv", new SearchHandler(source));
-//    Spark.get("viewcsv", new ViewHandler(source));
-    Spark.get("loadcsv", new LoadHandler());
-    Spark.init();
-    Spark.awaitInitialization();
+        DataSource source = new DataSource();
+        //    Spark.get("searchcsv", new SearchHandler(source));
+        Spark.get("viewcsv", new ViewHandler(source));
+    //    Spark.get("loadcsv", new LoadHandler());
+        Spark.init();
+        Spark.awaitInitialization();
 
     System.out.println("Server started at http://localhost:" + port);
   }
@@ -59,33 +58,33 @@ public class Server {
   public void run() {
     // possible root path?
 
-    this.scanner = new Scanner(System.in);
-    System.out.println("What is the path of the file you are searching?");
-    String csvPath = scanner.nextLine();
-    try {
-      DataSource source = new DataSource(csvPath);
-      Boolean isLoaded = source.loadCSV(csvPath);
-      if (isLoaded) {
-        List<List<String>> data = source.getCSVData();
-        this.parsedData = data;
-      } else {
-        System.out.println("The CSV file was unable to be loaded, please try again.");
-      }
-      System.out.println("What is the phrase that you are searching for in this file?");
-      // This set of methods refines the input
-      this.searchTerm = scanner.nextLine().toLowerCase().strip().replaceAll("[\"']", "");
-      this.handleColumn();
-
-    } catch (FileNotFoundException e) {
-      System.err.println("File Not Found");
-      System.exit(1);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (FactoryFailureException e) {
-      throw new RuntimeException(e);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    //    this.scanner = new Scanner(System.in);
+    //    System.out.println("What is the path of the file you are searching?");
+    //    String csvPath = scanner.nextLine();
+    //    try {
+    //      DataSource source = new DataSource(csvPath);
+    //      Boolean isLoaded = source.loadCSV(csvPath);
+    //      if (isLoaded) {
+    //        List<List<String>> data = source.getCSVData();
+    //        this.parsedData = data;
+    //      } else {
+    //        System.out.println("The CSV file was unable to be loaded, please try again.");
+    //      }
+    //      System.out.println("What is the phrase that you are searching for in this file?");
+    //      // This set of methods refines the input
+    //      this.searchTerm = scanner.nextLine().toLowerCase().strip().replaceAll("[\"']", "");
+    //      this.handleColumn();
+    //
+    //    } catch (FileNotFoundException e) {
+    //      System.err.println("File Not Found");
+    //      System.exit(1);
+    //    } catch (IOException e) {
+    //      throw new RuntimeException(e);
+    //    } catch (FactoryFailureException e) {
+    //      throw new RuntimeException(e);
+    //    } catch (Exception e) {
+    //      throw new RuntimeException(e);
+    //    }
   }
 
   /**
@@ -105,6 +104,7 @@ public class Server {
       System.out.println("What is the column identifier?");
       // makes sure that the column identifier accounts for discrepancies in the user input and the
       // csv file
+      // TODO: add functionality for columnindex
       this.columnIdentifier = this.scanner.nextLine().toLowerCase().strip();
       Search search = new Search(this.parsedData, this.searchTerm, this.columnIdentifier);
       List<List<String>> row = search.search();

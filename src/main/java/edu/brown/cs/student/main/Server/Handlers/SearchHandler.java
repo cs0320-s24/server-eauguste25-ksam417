@@ -1,11 +1,12 @@
-package edu.brown.cs.student.main.server;
+package edu.brown.cs.student.main.Server.Handlers;
 
 /** Criteria */
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
+import edu.brown.cs.student.main.Server.Server;
 import edu.brown.cs.student.main.csv.CSVAPIUtilities;
 import edu.brown.cs.student.main.csv.DataSource;
-import edu.brown.cs.student.main.csv.Parser;
+import edu.brown.cs.student.main.csv.Parser.Parser;
 import edu.brown.cs.student.main.csv.Search;
 import java.io.FileReader;
 import java.io.IOException;

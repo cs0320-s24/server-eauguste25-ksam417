@@ -2,6 +2,8 @@ package edu.brown.cs.student.main.csv;
 
 import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Interfaces.CreatorFromRow;
+import edu.brown.cs.student.main.csv.Parser.Parser;
+import edu.brown.cs.student.main.csv.Parser.RetListString;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
@@ -18,8 +20,7 @@ public class DataSource<T> {
     this.filepath = filePath;
   }
 
-  public DataSource() {
-  }
+  public DataSource() {}
 
   public boolean loadCSV(String filePath) throws Exception {
     this.filepath = filePath;

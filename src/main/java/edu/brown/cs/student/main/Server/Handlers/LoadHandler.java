@@ -1,8 +1,9 @@
-package edu.brown.cs.student.main.server;
+package edu.brown.cs.student.main.Server.Handlers;
 
 /** Criteria */
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
+import edu.brown.cs.student.main.Server.Server;
 import edu.brown.cs.student.main.csv.DataSource;
 import java.io.FileReader;
 import java.io.Reader;
@@ -23,6 +24,17 @@ public class LoadHandler implements Route {
 
   private String filepath = new Server().filepath;
   private DataSource source;
+
+  /**
+   * Constructs a LoadHandler with the specified file path and CSVDataSource.
+   *
+   * @param filePath The file path of the CSV file to be loaded.
+   * @param source The CSVDataSource instance used to load the CSV file.
+   */
+  public LoadHandler(String filePath, DataSource source) {
+    this.filepath = filePath;
+    this.source = source;
+  }
 
   // get the name of the filepath you are searching for
   // update variable in search class
