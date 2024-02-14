@@ -66,7 +66,7 @@ public class Server {
     try {
       Spark.get("loadcsv", testLoadHandler);
       Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
-      Spark.get("searchcsv", new SearchHandler());
+      Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {

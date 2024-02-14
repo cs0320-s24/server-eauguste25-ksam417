@@ -94,7 +94,4 @@ public class LoadHandler implements Route {
     return this.data;
   }
 
-  public boolean getLoadStatus() {
-    return this.loadStatus;
-  }
 }

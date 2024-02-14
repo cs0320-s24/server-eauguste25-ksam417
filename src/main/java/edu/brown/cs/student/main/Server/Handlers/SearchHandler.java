@@ -5,9 +5,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.Server.Server;
 import edu.brown.cs.student.main.csv.DataSource;
-import edu.brown.cs.student.main.csv.Parser.Parser;
 import edu.brown.cs.student.main.csv.Search;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -27,74 +25,61 @@ import spark.Route;
 public class SearchHandler implements Route {
 
   private DataSource source;
-  private Parser parser;
-  private String filepath = new Server().filepath;
-  private String colIdentifier;
-  private int colIndex;
+  private LoadHandler loadHandler;
+  private Search search;
 
-  public SearchHandler() {}
+  public SearchHandler(LoadHandler loadHandler, DataSource source) {
+    this.source = source;
+    this.loadHandler = loadHandler;
+    //    this.colIdentifier = colIdentifier;
+    //    this.colIndex = colIndex;
+  }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String searchTerm = request.queryParams("searchTerm");
-    String colheader = request.queryParams("header");
-    String index = request.queryParams("column_index");
-
-    LoadHandler loadHandler = new LoadHandler();
-
     Moshi moshi = new Builder().build();
-
     Type stringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
-
     JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(stringObject);
+
+    String searchTerm = request.queryParams("searchTerm");
+    String colHeader = request.queryParams("header");
+    String colIndex = request.queryParams("column_index");
 
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
+    this.source = this.loadHandler.getSource();
+    String filePath = this.loadHandler.getFilePath();
+    boolean isLoaded = this.source.loadCSV(filePath);
 
     try {
-      // this.source.loadCSV(this.filepath);
-      loadHandler.handle(request, response);
-
-      if (loadHandler.getSource().isLoaded) {
-        if (colheader != null) {
-          Search searchObject = new Search(this.source.getCSVData(), searchTerm, colheader);
-          List<List<String>> matchingRows = searchObject.search();
-
-          if (matchingRows.isEmpty()) {
-            responseMap.put("errorType", "no search results");
-          }
-
-          responseMap.put("type", "success");
-          responseMap.put("searchterm", searchTerm);
+      if (isLoaded) {
+        responseMap.put("type", "success");
+        responseMap.put("searchterm", searchTerm);
+        List matchingRows;
+        if (colHeader != null) {
+          this.search = new Search(this.source.getCSVData(), searchTerm, colHeader);
+          matchingRows = this.search.search();
           responseMap.put("matching rows: ", matchingRows);
         }
-        // What is this used for
-        // String searchcsv = this.sendRequest(searchTerm);
+        if (colIndex != null) {
+          this.search = new Search(this.source.getCSVData(), searchTerm, colHeader);
+          matchingRows = this.search.search();
+          responseMap.put("matching rows: ", matchingRows);
+        } else {
+          this.search = new Search(this.source.getCSVData(), searchTerm);
+          matchingRows = this.search.search();
+          responseMap.put("matching rows: ", matchingRows);
+        }
       }
-      // Sends a request to the API and receives JSON back
-      // Adds results to the responseMap
     } catch (Exception e) {
       responseMap.put("result", "error");
       responseMap.put("searchTerm", searchTerm);
       // put the rows that match the search term in the responseMap
-
       return jsonAdapter.toJson(responseMap);
     }
+
     // return the adapted version of the responseMap
     return jsonAdapter.toJson(responseMap);
   }
 
-  private String sendRequest(String searchTerm)
-      throws URISyntaxException, IOException, InterruptedException {
-    HttpRequest buildApiRequest =
-        HttpRequest.newBuilder().uri(new URI("http://localhost:3333" + searchTerm)).GET().build();
-
-    HttpResponse<String> sentApiResponse =
-        HttpClient.newBuilder().build().send(buildApiRequest, HttpResponse.BodyHandlers.ofString());
-
-    System.out.println(sentApiResponse);
-    System.out.println(sentApiResponse.body());
-
-    return sentApiResponse.body();
-  }
 }

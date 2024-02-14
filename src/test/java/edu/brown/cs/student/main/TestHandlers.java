@@ -3,6 +3,7 @@ package edu.brown.cs.student.main;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
+import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
 import edu.brown.cs.student.main.csv.DataSource;
 import edu.brown.cs.student.main.csv.MakeList;
@@ -49,5 +50,21 @@ public class TestHandlers {
     System.out.println(load.getSource());
     System.out.println(load.getFilePath());
     System.out.println(load.getSource().getCSVData());
+  }
+
+  public void testSearchHandler() throws Exception {
+    DataSource source = new DataSource();
+    MakeList list = new MakeList();
+    LoadHandler load =
+        new LoadHandler(
+            source,
+            "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/test.csv");
+    source.loadCSV(
+        "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/test.csv");
+    SearchHandler search = new SearchHandler(load, load.getSource());
+    System.out.println(source.getCSVData());
+
+
+
   }
 }
