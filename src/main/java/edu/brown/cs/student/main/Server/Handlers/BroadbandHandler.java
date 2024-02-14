@@ -6,7 +6,7 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.Exceptions.DatasourceException;
 import edu.brown.cs.student.main.csv.ACSData;
-import edu.brown.cs.student.main.csv.ACSDataSource;
+import edu.brown.cs.student.main.Interfaces.ACSDataSource;
 import edu.brown.cs.student.main.csv.LocationData;
 import java.io.IOException;
 import java.lang.reflect.Type;
