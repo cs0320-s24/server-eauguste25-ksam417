@@ -60,11 +60,12 @@ public class Server {
 
     LoadHandler testLoadHandler =
         new LoadHandler(
+            source,
             "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv");
 
     try {
       Spark.get("loadcsv", testLoadHandler);
-      Spark.get("viewcsv", new ViewHandler(testLoadHandler.getSource()));
+      Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
       Spark.get("searchcsv", new SearchHandler());
       Spark.init();
       Spark.awaitInitialization();
