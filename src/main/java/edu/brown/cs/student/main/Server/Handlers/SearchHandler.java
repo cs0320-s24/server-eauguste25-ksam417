@@ -7,13 +7,7 @@ import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.csv.DataSource;
 import edu.brown.cs.student.main.csv.Search;
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +35,7 @@ public class SearchHandler implements Route {
     Type stringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
     JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(stringObject);
 
-    String searchTerm = request.queryParams("searchTerm");
+    String searchterm = request.queryParams("searchterm");
     String colHeader = request.queryParams("header");
     String colIndex = request.queryParams("column_index");
 
@@ -53,27 +47,31 @@ public class SearchHandler implements Route {
 
     try {
       if (isLoaded) {
-        responseMap.put("type", "success");
-        responseMap.put("searchterm", searchTerm);
         List matchingRows;
         if (colHeader != null) {
-          this.search = new Search(this.source.getCSVData(), searchTerm, colHeader);
+          this.search = new Search(this.source.getCSVData(), searchterm, colHeader);
           matchingRows = this.search.search();
+          responseMap.put("type", "success");
+          responseMap.put("searchterm", searchterm);
           responseMap.put("matching rows: ", matchingRows);
         }
         if (colIndex != null) {
-          this.search = new Search(this.source.getCSVData(), searchTerm, colHeader);
+          this.search = new Search(this.source.getCSVData(), searchterm, colHeader);
           matchingRows = this.search.search();
+          responseMap.put("type", "success");
+          responseMap.put("searchterm", searchterm);
           responseMap.put("matching rows: ", matchingRows);
         } else {
-          this.search = new Search(this.source.getCSVData(), searchTerm);
+          this.search = new Search(this.source.getCSVData(), searchterm);
           matchingRows = this.search.search();
+          responseMap.put("type", "success");
+          responseMap.put("searchterm", searchterm);
           responseMap.put("matching rows: ", matchingRows);
         }
       }
     } catch (Exception e) {
       responseMap.put("result", "error");
-      responseMap.put("searchTerm", searchTerm);
+      responseMap.put("searchTerm", searchterm);
       // put the rows that match the search term in the responseMap
       return jsonAdapter.toJson(responseMap);
     }
@@ -81,5 +79,4 @@ public class SearchHandler implements Route {
     // return the adapted version of the responseMap
     return jsonAdapter.toJson(responseMap);
   }
-
 }

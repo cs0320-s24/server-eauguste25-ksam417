@@ -63,8 +63,5 @@ public class TestHandlers {
         "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/test.csv");
     SearchHandler search = new SearchHandler(load, load.getSource());
     System.out.println(source.getCSVData());
-
-
-
   }
 }

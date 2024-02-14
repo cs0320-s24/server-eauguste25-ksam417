@@ -93,5 +93,4 @@ public class LoadHandler implements Route {
   public List getData() {
     return this.data;
   }
-
 }
