@@ -19,9 +19,12 @@ public class ViewHandler implements Route {
 
   private DataSource source;
 
-  private LoadHandler loadHandler;
 
   public ViewHandler() {}
+
+  public ViewHandler(DataSource source) {
+    this.source = source;
+  }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
@@ -35,8 +38,9 @@ public class ViewHandler implements Route {
     JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(mapObject);
 
     Map<String, Object> responseMap = new HashMap<>();
-    // Sends a request to the API and receives JSON back
 
+    // TODO: make a datasource object and fill it somehow with the filepath that we get from
+    // loadhandler
     try {
       if (this.source.isLoaded) {
         responseMap.put("type", "success");
@@ -49,7 +53,7 @@ public class ViewHandler implements Route {
         // Handle the case where CSV is not loaded successfully
         responseMap.put("type", "error");
         responseMap.put("details", "Cannot view CSV file that is not loaded.");
-        return responseMap;
+        return jsonAdapter.toJson(responseMap);
       }
     } catch (Exception e) {
 
@@ -57,7 +61,7 @@ public class ViewHandler implements Route {
       responseMap.put("type", "error");
       responseMap.put(
           "details", "An error occurred while attempting to view the CSV file: " + e.getMessage());
-      return responseMap;
+      return jsonAdapter.toJson(responseMap);
     }
   }
 }
