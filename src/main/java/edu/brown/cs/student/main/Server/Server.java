@@ -3,6 +3,7 @@ package edu.brown.cs.student.main.Server;
 import static spark.Spark.after;
 
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
+import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
 import edu.brown.cs.student.main.csv.DataSource;
 import edu.brown.cs.student.main.csv.Search;
@@ -20,7 +21,7 @@ import spark.Spark;
 public class Server {
   private String[] args;
   private Scanner scanner;
-  public String filepath;
+  public static String filepath;
   private String searchTerm;
   private String columnIdentifier;
   private int columnIndex;
@@ -30,12 +31,15 @@ public class Server {
     this.args = args;
   }
 
-  public Server() {}
+  public Server() {
+    this.filepath =
+        "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/test.csv";
+  }
 
   public static void main(String[] args) {
     Server server = new Server(args);
     server.run();
-    int port = 3232;
+    int port = 3333;
     Spark.port(port);
 
     after(
@@ -48,9 +52,20 @@ public class Server {
 
     DataSource source = new DataSource();
 
+    //    Spark.get("searchcsv", new SearchHandler(source));
+    //    Spark.get("viewcsv", new ViewHandler(source));
+    //    Spark.get("loadcsv", new LoadHandler());
+    //    Spark.init();
+    //    Spark.awaitInitialization();
+
+    LoadHandler testLoadHandler =
+        new LoadHandler(
+            "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv");
+
     try {
-      Spark.get("viewcsv", new ViewHandler());
-      Spark.get("loadcsv", new LoadHandler());
+      Spark.get("loadcsv", testLoadHandler);
+      Spark.get("viewcsv", new ViewHandler(testLoadHandler.getSource()));
+      Spark.get("searchcsv", new SearchHandler());
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {

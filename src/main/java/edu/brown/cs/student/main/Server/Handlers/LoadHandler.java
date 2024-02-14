@@ -23,9 +23,12 @@ import spark.Route;
 public class LoadHandler implements Route {
 
   private DataSource source;
+  private String filePath;
 
   /** Constructs a LoadHandler with the specified file path and CSVDataSource. */
   public LoadHandler() {}
+
+  public LoadHandler(String filePath) {}
 
   // get the name of the filepath you are searching for
   // update variable in search class
@@ -46,7 +49,9 @@ public class LoadHandler implements Route {
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
 
+    this.source = new DataSource(filePath);
     this.source.loadCSV(filePath);
+    this.filePath = filePath;
 
     // Sends a request to the API and receives JSON back
     // Deserializes JSON into a loadcsv
@@ -58,6 +63,7 @@ public class LoadHandler implements Route {
       if (this.source.isLoaded) {
         responseMap.put("type", "success");
         responseMap.put("filepath", filePath);
+
       } else {
         responseMap.put("type", "error");
         responseMap.put("details", "Failed to load CSV file");
@@ -65,8 +71,17 @@ public class LoadHandler implements Route {
     } catch (Exception e) {
       responseMap.put("type", "error");
       responseMap.put("details", e.getMessage());
+      responseMap.put("filepath", filePath);
       return jsonAdapter.toJson(responseMap);
     }
     return jsonAdapter.toJson(responseMap);
+  }
+
+  public String getFilePath() {
+    return this.filePath;
+  }
+
+  public DataSource getSource() {
+    return this.source;
   }
 }

@@ -29,14 +29,18 @@ public class SearchHandler implements Route {
   private DataSource source;
   private Parser parser;
   private String filepath = new Server().filepath;
-  private String identifier;
+  private String colIdentifier;
+  private int colIndex;
 
   public SearchHandler() {}
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
     String searchTerm = request.queryParams("searchTerm");
-    String header = request.queryParams("header");
+    String colheader = request.queryParams("header");
+    String index = request.queryParams("column_index");
+
+    LoadHandler loadHandler = new LoadHandler();
 
     Moshi moshi = new Builder().build();
 
@@ -47,24 +51,25 @@ public class SearchHandler implements Route {
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
 
-    Search searchObject = new Search(this.source.getCSVData(), searchTerm, this.identifier);
-
     try {
-      this.source.loadCSV(this.filepath);
+      // this.source.loadCSV(this.filepath);
+      loadHandler.handle(request, response);
 
-      if (this.source.isLoaded) {
-        List<List<String>> matchingRows = searchObject.search();
+      if (loadHandler.getSource().isLoaded) {
+        if (colheader != null) {
+          Search searchObject = new Search(this.source.getCSVData(), searchTerm, colheader);
+          List<List<String>> matchingRows = searchObject.search();
 
-        if (matchingRows.isEmpty()) {
-          responseMap.put("errorType", "no search results");
+          if (matchingRows.isEmpty()) {
+            responseMap.put("errorType", "no search results");
+          }
+
+          responseMap.put("type", "success");
+          responseMap.put("searchterm", searchTerm);
+          responseMap.put("matching rows: ", matchingRows);
         }
-
-        responseMap.put("type", "success");
-        responseMap.put("searchterm", searchTerm);
-        responseMap.put("matching rows: ", matchingRows);
-
         // What is this used for
-        String searchcsv = this.sendRequest(searchTerm);
+        // String searchcsv = this.sendRequest(searchTerm);
       }
       // Sends a request to the API and receives JSON back
       // Adds results to the responseMap
@@ -82,7 +87,7 @@ public class SearchHandler implements Route {
   private String sendRequest(String searchTerm)
       throws URISyntaxException, IOException, InterruptedException {
     HttpRequest buildApiRequest =
-        HttpRequest.newBuilder().uri(new URI("http://localhost:3232" + searchTerm)).GET().build();
+        HttpRequest.newBuilder().uri(new URI("http://localhost:3333" + searchTerm)).GET().build();
 
     HttpResponse<String> sentApiResponse =
         HttpClient.newBuilder().build().send(buildApiRequest, HttpResponse.BodyHandlers.ofString());
