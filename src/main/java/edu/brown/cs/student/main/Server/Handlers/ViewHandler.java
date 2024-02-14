@@ -18,12 +18,13 @@ import spark.Route;
 public class ViewHandler implements Route {
 
   private DataSource source;
-
+  private LoadHandler loadHandler;
 
   public ViewHandler() {}
 
-  public ViewHandler(DataSource source) {
+  public ViewHandler(LoadHandler loadHandler, DataSource source) {
     this.source = source;
+    this.loadHandler = loadHandler;
   }
 
   @Override
@@ -38,22 +39,21 @@ public class ViewHandler implements Route {
     JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(mapObject);
 
     Map<String, Object> responseMap = new HashMap<>();
+    this.source = this.loadHandler.getSource();
+    String filePath = this.loadHandler.getFilePath();
+    boolean isLoaded = this.source.loadCSV(filePath);
 
-    // TODO: make a datasource object and fill it somehow with the filepath that we get from
-    // loadhandler
     try {
-      if (this.source.isLoaded) {
+      if (isLoaded) {
         responseMap.put("type", "success");
 
         // Add the two-dimensional json data to the responseMap
         responseMap.put("data", this.source.getCSVData());
         // Convert the csv data to json data
-        return jsonAdapter.toJson(responseMap);
       } else {
         // Handle the case where CSV is not loaded successfully
         responseMap.put("type", "error");
         responseMap.put("details", "Cannot view CSV file that is not loaded.");
-        return jsonAdapter.toJson(responseMap);
       }
     } catch (Exception e) {
 
@@ -63,5 +63,6 @@ public class ViewHandler implements Route {
           "details", "An error occurred while attempting to view the CSV file: " + e.getMessage());
       return jsonAdapter.toJson(responseMap);
     }
+    return jsonAdapter.toJson(responseMap);
   }
 }

@@ -8,8 +8,8 @@ import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.csv.DataSource;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -24,11 +24,16 @@ public class LoadHandler implements Route {
 
   private DataSource source;
   private String filePath;
+  private List data;
+  private boolean loadStatus;
 
   /** Constructs a LoadHandler with the specified file path and CSVDataSource. */
   public LoadHandler() {}
 
-  public LoadHandler(String filePath) {}
+  public LoadHandler(DataSource source, String filePath) {
+    this.filePath = filePath;
+    this.source = source;
+  }
 
   // get the name of the filepath you are searching for
   // update variable in search class
@@ -38,7 +43,7 @@ public class LoadHandler implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
 
-    String filePath = request.queryParams("filePath");
+    this.filePath = request.queryParams("filePath");
 
     Moshi moshi = new Builder().build();
 
@@ -49,20 +54,20 @@ public class LoadHandler implements Route {
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
 
-    this.source = new DataSource(filePath);
-    this.source.loadCSV(filePath);
-    this.filePath = filePath;
+    this.source.loadCSV(this.filePath);
+    this.loadStatus = this.source.getLoadStatus();
+    this.data = this.source.getCSVData();
 
     // Sends a request to the API and receives JSON back
     // Deserializes JSON into a loadcsv
-    Set<String> params = request.queryParams();
+    // Set<String> params = request.queryParams();
     // requests the filepath
 
     try {
 
-      if (this.source.isLoaded) {
+      if (this.loadStatus) {
         responseMap.put("type", "success");
-        responseMap.put("filepath", filePath);
+        responseMap.put("filepath", this.filePath);
 
       } else {
         responseMap.put("type", "error");
@@ -71,7 +76,7 @@ public class LoadHandler implements Route {
     } catch (Exception e) {
       responseMap.put("type", "error");
       responseMap.put("details", e.getMessage());
-      responseMap.put("filepath", filePath);
+      responseMap.put("filepath", this.filePath);
       return jsonAdapter.toJson(responseMap);
     }
     return jsonAdapter.toJson(responseMap);
@@ -83,5 +88,9 @@ public class LoadHandler implements Route {
 
   public DataSource getSource() {
     return this.source;
+  }
+
+  public List getData() {
+    return this.data;
   }
 }
