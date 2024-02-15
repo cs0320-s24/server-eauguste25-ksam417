@@ -23,7 +23,6 @@ import spark.Spark;
 public class Server {
   private String[] args;
   private Scanner scanner;
-  public static String filepath;
   private String searchTerm;
   private String columnIdentifier;
   private int columnIndex;
@@ -46,8 +45,6 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-    // Setting up the handler for the GET /order and /activity endpoints
-
     CSVDataSource source = new CSVDataSource();
 
     LoadHandler testLoadHandler =
@@ -56,8 +53,11 @@ public class Server {
             "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/RI City & Town Income from American Community Survey 5-Year Estimates Source_ US Census Bureau, 2017-2021 American Community Survey 5-Year Estimates 2017-2021 - Sheet1.csv");
 
     try {
+      /** Endpoint which loads a CSV file */
       Spark.get("loadcsv", testLoadHandler);
+      /** Endpoint which prints the entirety of a loaded CSV file */
       Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
+      /** Endpoint which sends back rows matching the given search criteria. */
       Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
       Spark.get("broadband", new BroadbandHandler(ACSData));
       Spark.init();
