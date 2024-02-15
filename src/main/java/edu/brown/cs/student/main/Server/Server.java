@@ -31,14 +31,9 @@ public class Server {
     this.args = args;
   }
 
-  public Server() {
-    this.filepath =
-        "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/test.csv";
-  }
+  public Server() {}
 
   public static void main(String[] args) {
-    Server server = new Server(args);
-    server.run();
     int port = 3333;
     Spark.port(port);
 
@@ -52,16 +47,10 @@ public class Server {
 
     DataSource source = new DataSource();
 
-    //    Spark.get("searchcsv", new SearchHandler(source));
-    //    Spark.get("viewcsv", new ViewHandler(source));
-    //    Spark.get("loadcsv", new LoadHandler());
-    //    Spark.init();
-    //    Spark.awaitInitialization();
-
     LoadHandler testLoadHandler =
         new LoadHandler(
             source,
-            "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv");
+            "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/RI City & Town Income from American Community Survey 5-Year Estimates Source_ US Census Bureau, 2017-2021 American Community Survey 5-Year Estimates 2017-2021 - Sheet1.csv");
 
     try {
       Spark.get("loadcsv", testLoadHandler);
@@ -72,7 +61,6 @@ public class Server {
     } catch (Exception e) {
 
     }
-    //    Spark.get("searchcsv", new SearchHandler(source));
 
     System.out.println("Server started at http://localhost:" + port);
   }

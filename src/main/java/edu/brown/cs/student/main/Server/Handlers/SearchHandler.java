@@ -21,6 +21,9 @@ public class SearchHandler implements Route {
   private DataSource source;
   private LoadHandler loadHandler;
   private Search search;
+  private String searchterm;
+  private String colHeader;
+  private String colIndex;
 
   public SearchHandler(LoadHandler loadHandler, DataSource source) {
     this.source = source;
@@ -35,9 +38,18 @@ public class SearchHandler implements Route {
     Type stringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
     JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(stringObject);
 
-    String searchterm = request.queryParams("searchterm");
-    String colHeader = request.queryParams("header");
-    String colIndex = request.queryParams("column_index");
+    this.searchterm = request.queryParams("searchterm");
+    this.colHeader = request.queryParams("header");
+    this.colIndex = request.queryParams(Integer.parseInt("column_index"));
+
+    // Check if searchTerm is null
+    if (this.searchterm == null) {
+      // Handle null searchTerm
+      Map<String, Object> responseMap = new HashMap<>();
+      responseMap.put("result", "error");
+      responseMap.put("message", "Search term is required.");
+      return jsonAdapter.toJson(responseMap);
+    }
 
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
@@ -48,35 +60,62 @@ public class SearchHandler implements Route {
     try {
       if (isLoaded) {
         List matchingRows;
-        if (colHeader != null) {
-          this.search = new Search(this.source.getCSVData(), searchterm, colHeader);
+        if (this.colHeader != null) {
+          this.search = new Search(this.source.getCSVData(), this.searchterm, this.colHeader);
           matchingRows = this.search.search();
           responseMap.put("type", "success");
-          responseMap.put("searchterm", searchterm);
+          responseMap.put("searchterm", this.searchterm);
+          responseMap.put("column_header:", this.colHeader);
           responseMap.put("matching rows: ", matchingRows);
         }
-        if (colIndex != null) {
-          this.search = new Search(this.source.getCSVData(), searchterm, colHeader);
+        if (this.colIndex != null) {
+          this.search = new Search(this.source.getCSVData(), this.searchterm, this.colIndex);
           matchingRows = this.search.search();
           responseMap.put("type", "success");
-          responseMap.put("searchterm", searchterm);
+          responseMap.put("searchterm", this.searchterm);
+          responseMap.put("column_index:", this.colIndex);
           responseMap.put("matching rows: ", matchingRows);
         } else {
-          this.search = new Search(this.source.getCSVData(), searchterm);
+          this.search = new Search(this.source.getCSVData(), this.searchterm);
           matchingRows = this.search.search();
-          responseMap.put("type", "success");
-          responseMap.put("searchterm", searchterm);
-          responseMap.put("matching rows: ", matchingRows);
+          if (!matchingRows.isEmpty()) {
+            responseMap.put("type", "success");
+            responseMap.put("searchterm", this.searchterm);
+            responseMap.put("matching rows: ", matchingRows);
+          } else {
+            responseMap.put("type", "success");
+            responseMap.put("result", "No matching rows were found. Please try again.");
+          }
         }
       }
     } catch (Exception e) {
+      e.printStackTrace();
       responseMap.put("result", "error");
-      responseMap.put("searchTerm", searchterm);
       // put the rows that match the search term in the responseMap
       return jsonAdapter.toJson(responseMap);
     }
 
     // return the adapted version of the responseMap
     return jsonAdapter.toJson(responseMap);
+  }
+
+  /**
+   * Getter method for the search term
+   * @return the input search term
+   */
+  public String getSearchTerm() {
+    return this.searchterm;
+  }
+
+  public String colHeader() {
+    return this.colHeader;
+  }
+
+  public int colIndex() {
+    return Integer.parseInt(this.colIndex);
+  }
+
+  public DataSource getSource() {
+    return this.source;
   }
 }
