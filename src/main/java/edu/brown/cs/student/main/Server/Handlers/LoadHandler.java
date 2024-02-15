@@ -60,6 +60,7 @@ public class LoadHandler implements Route {
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
 
+
     this.source.loadCSV(this.filePath);
     this.loadStatus = this.source.getLoadStatus();
     this.data = this.source.getCSVData();
