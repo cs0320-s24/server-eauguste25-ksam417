@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.csv.DataSource;
+import edu.brown.cs.student.main.csv.CSVDataSource;
 import edu.brown.cs.student.main.csv.Search;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -18,14 +18,14 @@ import spark.Route;
 /** Endpoint which sends back rows matching the given search criteria. */
 public class SearchHandler implements Route {
 
-  private DataSource source;
+  private CSVDataSource source;
   private LoadHandler loadHandler;
   private Search search;
   private String searchterm;
   private String colHeader;
   private String colIndex;
 
-  public SearchHandler(LoadHandler loadHandler, DataSource source) {
+  public SearchHandler(LoadHandler loadHandler, CSVDataSource source) {
     this.source = source;
     this.loadHandler = loadHandler;
     //    this.colIdentifier = colIdentifier;
@@ -40,7 +40,7 @@ public class SearchHandler implements Route {
 
     this.searchterm = request.queryParams("searchterm");
     this.colHeader = request.queryParams("header");
-    this.colIndex = request.queryParams(Integer.parseInt("column_index"));
+    this.colIndex = request.queryParams("column_index");
 
     // Check if searchTerm is null
     if (this.searchterm == null) {
@@ -101,6 +101,7 @@ public class SearchHandler implements Route {
 
   /**
    * Getter method for the search term
+   *
    * @return the input search term
    */
   public String getSearchTerm() {
@@ -115,7 +116,7 @@ public class SearchHandler implements Route {
     return Integer.parseInt(this.colIndex);
   }
 
-  public DataSource getSource() {
+  public CSVDataSource getSource() {
     return this.source;
   }
 }

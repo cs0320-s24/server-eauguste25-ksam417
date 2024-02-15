@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.csv.DataSource;
+import edu.brown.cs.student.main.csv.CSVDataSource;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,7 @@ import spark.Route;
  */
 public class LoadHandler implements Route {
 
-  private DataSource source;
+  private CSVDataSource source;
   private String filePath;
   private List data;
   private boolean loadStatus;
@@ -30,7 +30,7 @@ public class LoadHandler implements Route {
   /** Constructs a LoadHandler with the specified file path and CSVDataSource. */
   public LoadHandler() {}
 
-  public LoadHandler(DataSource source, String filePath) {
+  public LoadHandler(CSVDataSource source, String filePath) {
     this.filePath = filePath;
     this.source = source;
   }
@@ -86,7 +86,7 @@ public class LoadHandler implements Route {
     return this.filePath;
   }
 
-  public DataSource getSource() {
+  public CSVDataSource getSource() {
     return this.source;
   }
 

@@ -2,10 +2,12 @@ package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.Interfaces.ACSDataSource;
+import edu.brown.cs.student.main.Server.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import edu.brown.cs.student.main.csv.DataSource;
+import edu.brown.cs.student.main.csv.CSVDataSource;
 import edu.brown.cs.student.main.csv.Search;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -26,6 +28,7 @@ public class Server {
   private String columnIdentifier;
   private int columnIndex;
   private List<List<String>> parsedData;
+  private static ACSDataSource ACSData;
 
   public Server(String[] args) {
     this.args = args;
@@ -45,7 +48,7 @@ public class Server {
 
     // Setting up the handler for the GET /order and /activity endpoints
 
-    DataSource source = new DataSource();
+    CSVDataSource source = new CSVDataSource();
 
     LoadHandler testLoadHandler =
         new LoadHandler(
@@ -56,6 +59,7 @@ public class Server {
       Spark.get("loadcsv", testLoadHandler);
       Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
       Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
+      Spark.get("broadband", new BroadbandHandler(ACSData));
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {

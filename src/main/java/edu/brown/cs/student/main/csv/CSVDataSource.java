@@ -9,18 +9,18 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.List;
 
-public class DataSource<T> {
+public class CSVDataSource<T> {
 
   private List CSVData;
   public boolean isLoaded;
   private String filepath;
   private Search searcher;
 
-  public DataSource(String filePath) {
+  public CSVDataSource(String filePath) {
     this.filepath = filePath;
   }
 
-  public DataSource() {}
+  public CSVDataSource() {}
 
   public boolean loadCSV(String filePath) throws Exception {
     this.filepath = filePath;
