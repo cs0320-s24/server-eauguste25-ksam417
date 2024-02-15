@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.CSV.CSVDataSource;
+import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;

@@ -9,8 +9,7 @@ The Server and CSV packages each have their own respective packages where the fu
 implemented.
 
 These are as follows:
-Aside from Testing, the packages are split into four main groups: CSV, Exceptions, Interfaces and
-Server
+The packages are split into five main groups: CSV, Exceptions, Interfaces, Server, and Test
 
 -  Exceptions
   - There are two Exception files inside the Exceptions package: DatasourceException and
@@ -22,23 +21,43 @@ Server
     there to assist with any broadband and ACS Data handling.
 
 - CSV
-  - The CSV package is split into two main parts: one package named 'Parser' which contains all the
-    classes related to parsing a CSV file and the rest of the Classes are related to Searching and
-    handling the CSVDataSources.
+  - The CSV package is split into three main parts: one package named 'Parser' which contains all
+    the classes related to parsing a CSV file, another package named 'DataSource' pertaining to
+    DataSources, and a third package named 'Records' which contains some Records classes which
+    assist in handling the ACS data. A Search class and a general CSVAPIUtilities also exist in the
+    general CSV Package.
 
 - Server
-  - Caching
-  - Handlers
-  - Main Server
+  - The Server package is split into three main parts: one package named 'Caching' which handles all
+    caching functionality, another package named 'Handlers' which contains all the handler classes
+    for the endpoints of the server, and the main Server class which runs the program and creates
+    the server in the browser.
 
-- Records
-
+- Test
+  - The Testing package consists of three test files, one for testing CSV parsing, another for
+    simple testing of the handler classes, and a third for testing the ACS data.
 
 Design:
+  - The CSV Parser and Search implementation come from the previous project in order to be
+    implemented into the Handler classes.
+  - The Server implementation allows for four endpoints to be used in the browser: viewcsv, loadcsv,
+    searchcsv, and broadband. Loadcsv effectively "loads" a csv file so that it can be viewed or
+    searched. This is where the parsing of the CSV file takes place. Viewcsv allows the user to view
+    a loaded csv file in 2-dimensional JSON format. Searchcsv allows the user to search a loaded
+    csv file and displays the rows that match the search criteria in 2-dimensional JSON format.
 
 
 Instructions for Use:
     - Run the Main class.
+    - A link to the localhost server will be displayed in the terminal; click on the link.
+    - You will be brought to a web page that allows you to search up different endpoints:
+      viewcsv, loadcsv, searchcsv, and broadband.
+    - An example for accessing one of the endpoints: http://localhost:3333/viewcsv
+    - If you want to query at one of the endpoints, you would use the '?' key after an endpoint and
+      type the specific parameter that you are trying to search. For example:
+      http://localhost:3333/searchcsv?searchterm=hello&header=greeting
+    - The above example would search a csv file with a search term of 'hello' and the specified
+      column header would be 'greeting'
 
 Partners: Eric Auguste (eaugust5) and Korey Sam (ksam2)
-Repo:
+Repo:**
