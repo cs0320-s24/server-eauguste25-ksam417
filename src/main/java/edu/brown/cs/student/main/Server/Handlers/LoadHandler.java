@@ -1,11 +1,10 @@
 package edu.brown.cs.student.main.Server.Handlers;
 
-/** Criteria */
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.csv.CSVDataSource;
+import edu.brown.cs.student.main.CSV.CSVDataSource;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +26,12 @@ public class LoadHandler implements Route {
   private List data;
   private boolean loadStatus;
 
-  /** Constructs a LoadHandler with the specified file path and CSVDataSource. */
-  public LoadHandler() {}
-
+  /**
+   * Constructor for LoadHandler that takes in a CSVDataSource and a String filepath to load and
+   * set up for other endpoints
+   * @param source
+   * @param filePath
+   */
   public LoadHandler(CSVDataSource source, String filePath) {
     this.filePath = filePath;
     this.source = source;
@@ -40,13 +42,17 @@ public class LoadHandler implements Route {
   // the only thing that changes for view would be dependent on the filepath
   // load would update and view and search would use the information from that variable
 
+  /**
+   * Handles the loading of a CSV file, making sure that it is able to be parsed
+   * @param request
+   * @param response
+   * @return
+   * @throws Exception
+   */
   @Override
   public Object handle(Request request, Response response) throws Exception {
-
     this.filePath = request.queryParams("filePath");
-
     Moshi moshi = new Builder().build();
-
     Type stringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
 
     JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(stringObject);
@@ -58,21 +64,17 @@ public class LoadHandler implements Route {
     this.loadStatus = this.source.getLoadStatus();
     this.data = this.source.getCSVData();
 
-    // Sends a request to the API and receives JSON back
-    // Deserializes JSON into a loadcsv
-    // Set<String> params = request.queryParams();
-    // requests the filepath
-
     try {
-
+      // if the csv file is loaded
       if (this.loadStatus) {
         responseMap.put("type", "success");
         responseMap.put("filepath", this.filePath);
-
+      // if the csv file is not loaded
       } else {
         responseMap.put("type", "error");
         responseMap.put("details", "Failed to load CSV file");
       }
+      // if an error is caught:
     } catch (Exception e) {
       responseMap.put("type", "error");
       responseMap.put("details", e.getMessage());
@@ -82,14 +84,26 @@ public class LoadHandler implements Route {
     return jsonAdapter.toJson(responseMap);
   }
 
+  /**
+   * Getter method for the file path field
+   * @return a String representing the filePath
+   */
   public String getFilePath() {
     return this.filePath;
   }
 
+  /**
+   * Getter method for the CSVDataSource
+   * @return a CSVDataSource
+   */
   public CSVDataSource getSource() {
     return this.source;
   }
 
+  /**
+   * Getter method for the CSV data
+   * @return the data of a CSV file
+   */
   public List getData() {
     return this.data;
   }

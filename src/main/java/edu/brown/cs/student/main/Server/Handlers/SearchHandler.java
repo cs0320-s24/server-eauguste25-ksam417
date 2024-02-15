@@ -1,12 +1,11 @@
 package edu.brown.cs.student.main.Server.Handlers;
 
-/** Criteria */
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.csv.CSVDataSource;
-import edu.brown.cs.student.main.csv.Search;
+import edu.brown.cs.student.main.CSV.CSVDataSource;
+import edu.brown.cs.student.main.CSV.Search;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/** Endpoint which sends back rows matching the given search criteria. */
 public class SearchHandler implements Route {
 
   private CSVDataSource source;
@@ -25,13 +23,24 @@ public class SearchHandler implements Route {
   private String colHeader;
   private String colIndex;
 
+  /**
+   * A constructor for the SearchHandler class which takes in a LoadHandler and a CSVDataSource in
+   * order to conduct a search on a loaded CSV file
+   * @param loadHandler
+   * @param source
+   */
   public SearchHandler(LoadHandler loadHandler, CSVDataSource source) {
     this.source = source;
     this.loadHandler = loadHandler;
-    //    this.colIdentifier = colIdentifier;
-    //    this.colIndex = colIndex;
   }
 
+  /**
+   * Handles the search functionality after a CSV file is loaded in
+   * @param request
+   * @param response
+   * @return
+   * @throws Exception
+   */
   @Override
   public Object handle(Request request, Response response) throws Exception {
     Moshi moshi = new Builder().build();
