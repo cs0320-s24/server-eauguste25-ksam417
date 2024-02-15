@@ -18,14 +18,14 @@ import java.util.List;
 public class Proxy {
     //private final LoadHandler loadHandler;
 
-    private final LoadingCache<String, List<String>> cache;
+    //private final LoadingCache<String, List<String>> cache;
 
-    public Proxy(CacheLoader<String, List<String>> loader, CacheConfiguration config) {
-        this.cache = CacheBuilder.newBuilder()
-                .maximumSize(config.getMaximumSize())
-                .expireAfterWrite(config.getExpireAfterWriteSeconds(), TimeUnit.SECONDS)
-                .build(loader);
-    }
+//    public Proxy(CacheLoader<String, List<String>> loader, CacheConfiguration config) {
+//        this.cache = CacheBuilder.newBuilder()
+//                .maximumSize(config.getMaximumSize())
+//                .expireAfterWrite(config.getExpireAfterWriteSeconds(), TimeUnit.SECONDS)
+//                .build(loader);
+//    }
 
 
 

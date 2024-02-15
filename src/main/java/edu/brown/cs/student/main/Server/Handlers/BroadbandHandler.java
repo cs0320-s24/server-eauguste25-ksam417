@@ -76,15 +76,5 @@ public class BroadbandHandler implements Route {
     }
   }
 
-  private static HttpURLConnection connect(URL requestURL) throws DatasourceException, IOException {
-    URLConnection urlConnection = requestURL.openConnection();
-    if (!(urlConnection instanceof HttpURLConnection))
-      throw new DatasourceException("unexpected: result of connection wasn't HTTP");
-    HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
-    clientConnection.connect(); // GET
-    if (clientConnection.getResponseCode() != 200)
-      throw new DatasourceException(
-          "unexpected: API connection not success status " + clientConnection.getResponseMessage());
-    return clientConnection;
-  }
+
 }
