@@ -27,12 +27,18 @@ Server
     handling the CSVDataSources.
 
 - Server
+  - Caching
+  - Handlers
+  - Main Server
+
+- Records
 
 
 Design:
 
 
 Instructions for Use:
+    - Run the Main class.
 
 Partners: Eric Auguste (eaugust5) and Korey Sam (ksam2)
 Repo:
