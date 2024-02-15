@@ -37,6 +37,11 @@
            The adapters README.md includes a "latest.version" version; replaced with
            latest version as of August 2022.
        -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.0.1-jre</version>
+    </dependency>
 
     <dependency>
       <groupId>com.squareup.moshi</groupId>
@@ -81,6 +86,12 @@
       <artifactId>junit</artifactId>
       <version>4.13.1</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>19.0</version>
+      <scope>compile</scope>
     </dependency>
 
   </dependencies>
