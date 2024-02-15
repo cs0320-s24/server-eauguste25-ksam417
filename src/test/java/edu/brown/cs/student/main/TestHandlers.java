@@ -6,8 +6,7 @@ import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import edu.brown.cs.student.main.csv.DataSource;
-import edu.brown.cs.student.main.csv.MakeList;
+import edu.brown.cs.student.main.csv.CSVDataSource;
 import edu.brown.cs.student.main.csv.Search;
 import java.io.FileNotFoundException;
 import org.junit.After;
@@ -16,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestHandlers {
   private LoadHandler loadHandler;
-  private DataSource source;
+  private CSVDataSource source;
   private String colHeader;
   private int colIndex;
   private String searchTerm;
@@ -25,7 +24,7 @@ public class TestHandlers {
 
   @Before
   public void setUp() throws FileNotFoundException, FactoryFailureException {
-    this.source = new DataSource();
+    this.source = new CSVDataSource();
 
     this.loadHandler =
         new LoadHandler(
@@ -60,6 +59,7 @@ public class TestHandlers {
 
   /**
    * This method tests whether ViewHandler is able to access loaded CSV data
+   *
    * @throws Exception
    */
   @Test

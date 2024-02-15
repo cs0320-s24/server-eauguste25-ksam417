@@ -4,7 +4,7 @@ package edu.brown.cs.student.main.Server.Handlers;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.csv.DataSource;
+import edu.brown.cs.student.main.csv.CSVDataSource;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +17,12 @@ import spark.Route;
 /** Endpoint which sends back the entire CSV file's contents as a Json 2-dimensional array. */
 public class ViewHandler implements Route {
 
-  private DataSource source;
+  private CSVDataSource source;
   private LoadHandler loadHandler;
 
   public ViewHandler() {}
 
-  public ViewHandler(LoadHandler loadHandler, DataSource source) {
+  public ViewHandler(LoadHandler loadHandler, CSVDataSource source) {
     this.source = source;
     this.loadHandler = loadHandler;
   }
