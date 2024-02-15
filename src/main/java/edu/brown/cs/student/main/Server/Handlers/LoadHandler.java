@@ -53,10 +53,7 @@ public class LoadHandler implements Route {
     this.source.loadCSV(filePath);
     this.filePath = filePath;
 
-    // Sends a request to the API and receives JSON back
-    // Deserializes JSON into a loadcsv
     Set<String> params = request.queryParams();
-    // requests the filepath
 
     try {
 
