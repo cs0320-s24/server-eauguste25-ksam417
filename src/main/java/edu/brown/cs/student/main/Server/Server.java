@@ -2,11 +2,13 @@ package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.Interfaces.ACSDataSource;
+import edu.brown.cs.student.main.Server.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import edu.brown.cs.student.main.csv.DataSource;
-import edu.brown.cs.student.main.csv.Search;
+import edu.brown.cs.student.main.CSV.CSVDataSource;
+import edu.brown.cs.student.main.CSV.Search;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
@@ -21,24 +23,19 @@ import spark.Spark;
 public class Server {
   private String[] args;
   private Scanner scanner;
-  public static String filepath;
   private String searchTerm;
   private String columnIdentifier;
   private int columnIndex;
   private List<List<String>> parsedData;
+  private static ACSDataSource ACSData;
 
   public Server(String[] args) {
     this.args = args;
   }
 
-  public Server() {
-    this.filepath =
-        "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/test.csv";
-  }
+  public Server() {}
 
   public static void main(String[] args) {
-    Server server = new Server(args);
-    server.run();
     int port = 3333;
     Spark.port(port);
 
@@ -48,30 +45,26 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-    // Setting up the handler for the GET /order and /activity endpoints
-
-    DataSource source = new DataSource();
-
-    //    Spark.get("searchcsv", new SearchHandler(source));
-    //    Spark.get("viewcsv", new ViewHandler(source));
-    //    Spark.get("loadcsv", new LoadHandler());
-    //    Spark.init();
-    //    Spark.awaitInitialization();
+    CSVDataSource source = new CSVDataSource();
 
     LoadHandler testLoadHandler =
         new LoadHandler(
-            "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv");
+            source,
+            "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/RI City & Town Income from American Community Survey 5-Year Estimates Source_ US Census Bureau, 2017-2021 American Community Survey 5-Year Estimates 2017-2021 - Sheet1.csv");
 
     try {
+      /** Endpoint which loads a CSV file */
       Spark.get("loadcsv", testLoadHandler);
-      Spark.get("viewcsv", new ViewHandler(testLoadHandler.getSource()));
-      Spark.get("searchcsv", new SearchHandler());
+      /** Endpoint which prints the entirety of a loaded CSV file */
+      Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
+      /** Endpoint which sends back rows matching the given search criteria. */
+      Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
+      Spark.get("broadband", new BroadbandHandler(ACSData));
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {
 
     }
-    //    Spark.get("searchcsv", new SearchHandler(source));
 
     System.out.println("Server started at http://localhost:" + port);
   }

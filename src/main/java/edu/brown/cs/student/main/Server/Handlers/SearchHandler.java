@@ -1,21 +1,12 @@
 package edu.brown.cs.student.main.Server.Handlers;
 
-/** Criteria */
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Moshi.Builder;
 import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.Server.Server;
-import edu.brown.cs.student.main.csv.DataSource;
-import edu.brown.cs.student.main.csv.Parser.Parser;
-import edu.brown.cs.student.main.csv.Search;
-import java.io.IOException;
+import edu.brown.cs.student.main.CSV.CSVDataSource;
+import edu.brown.cs.student.main.CSV.Search;
 import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,78 +14,118 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/** Endpoint which sends back rows matching the given search criteria. */
 public class SearchHandler implements Route {
 
-  private DataSource source;
-  private Parser parser;
-  private String filepath = new Server().filepath;
-  private String colIdentifier;
-  private int colIndex;
+  private CSVDataSource source;
+  private LoadHandler loadHandler;
+  private Search search;
+  private String searchterm;
+  private String colHeader;
+  private String colIndex;
 
-  public SearchHandler() {}
+  /**
+   * A constructor for the SearchHandler class which takes in a LoadHandler and a CSVDataSource in
+   * order to conduct a search on a loaded CSV file
+   * @param loadHandler
+   * @param source
+   */
+  public SearchHandler(LoadHandler loadHandler, CSVDataSource source) {
+    this.source = source;
+    this.loadHandler = loadHandler;
+  }
 
+  /**
+   * Handles the search functionality after a CSV file is loaded in
+   * @param request
+   * @param response
+   * @return
+   * @throws Exception
+   */
   @Override
   public Object handle(Request request, Response response) throws Exception {
-    String searchTerm = request.queryParams("searchTerm");
-    String colheader = request.queryParams("header");
-    String index = request.queryParams("column_index");
-
-    LoadHandler loadHandler = new LoadHandler();
-
     Moshi moshi = new Builder().build();
-
     Type stringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
-
     JsonAdapter<Map<String, Object>> jsonAdapter = moshi.adapter(stringObject);
+
+    this.searchterm = request.queryParams("searchterm");
+    this.colHeader = request.queryParams("header");
+    this.colIndex = request.queryParams("column_index");
+
+    // Check if searchTerm is null
+    if (this.searchterm == null) {
+      // Handle null searchTerm
+      Map<String, Object> responseMap = new HashMap<>();
+      responseMap.put("result", "error");
+      responseMap.put("message", "Search term is required.");
+      return jsonAdapter.toJson(responseMap);
+    }
 
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
+    this.source = this.loadHandler.getSource();
+    String filePath = this.loadHandler.getFilePath();
+    boolean isLoaded = this.source.loadCSV(filePath);
 
     try {
-      // this.source.loadCSV(this.filepath);
-      loadHandler.handle(request, response);
-
-      if (loadHandler.getSource().isLoaded) {
-        if (colheader != null) {
-          Search searchObject = new Search(this.source.getCSVData(), searchTerm, colheader);
-          List<List<String>> matchingRows = searchObject.search();
-
-          if (matchingRows.isEmpty()) {
-            responseMap.put("errorType", "no search results");
-          }
-
+      if (isLoaded) {
+        List matchingRows;
+        if (this.colHeader != null) {
+          this.search = new Search(this.source.getCSVData(), this.searchterm, this.colHeader);
+          matchingRows = this.search.search();
           responseMap.put("type", "success");
-          responseMap.put("searchterm", searchTerm);
+          responseMap.put("searchterm", this.searchterm);
+          responseMap.put("column_header:", this.colHeader);
           responseMap.put("matching rows: ", matchingRows);
         }
-        // What is this used for
-        // String searchcsv = this.sendRequest(searchTerm);
+        if (this.colIndex != null) {
+          this.search = new Search(this.source.getCSVData(), this.searchterm, this.colIndex);
+          matchingRows = this.search.search();
+          responseMap.put("type", "success");
+          responseMap.put("searchterm", this.searchterm);
+          responseMap.put("column_index:", this.colIndex);
+          responseMap.put("matching rows: ", matchingRows);
+        } else {
+          this.search = new Search(this.source.getCSVData(), this.searchterm);
+          matchingRows = this.search.search();
+          if (!matchingRows.isEmpty()) {
+            responseMap.put("type", "success");
+            responseMap.put("searchterm", this.searchterm);
+            responseMap.put("matching rows: ", matchingRows);
+          } else {
+            responseMap.put("type", "success");
+            responseMap.put("result", "No matching rows were found. Please try again.");
+          }
+        }
       }
-      // Sends a request to the API and receives JSON back
-      // Adds results to the responseMap
     } catch (Exception e) {
+      e.printStackTrace();
       responseMap.put("result", "error");
-      responseMap.put("searchTerm", searchTerm);
       // put the rows that match the search term in the responseMap
-
       return jsonAdapter.toJson(responseMap);
     }
+
     // return the adapted version of the responseMap
     return jsonAdapter.toJson(responseMap);
   }
 
-  private String sendRequest(String searchTerm)
-      throws URISyntaxException, IOException, InterruptedException {
-    HttpRequest buildApiRequest =
-        HttpRequest.newBuilder().uri(new URI("http://localhost:3333" + searchTerm)).GET().build();
+  /**
+   * Getter method for the search term
+   *
+   * @return the input search term
+   */
+  public String getSearchTerm() {
+    return this.searchterm;
+  }
 
-    HttpResponse<String> sentApiResponse =
-        HttpClient.newBuilder().build().send(buildApiRequest, HttpResponse.BodyHandlers.ofString());
+  public String colHeader() {
+    return this.colHeader;
+  }
 
-    System.out.println(sentApiResponse);
-    System.out.println(sentApiResponse.body());
+  public int colIndex() {
+    return Integer.parseInt(this.colIndex);
+  }
 
-    return sentApiResponse.body();
+  public CSVDataSource getSource() {
+    return this.source;
   }
 }

@@ -3,8 +3,8 @@ package edu.brown.cs.student.main;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import edu.brown.cs.student.main.Interfaces.CreatorFromRow;
-import edu.brown.cs.student.main.csv.Parser.Parser;
+import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
+import edu.brown.cs.student.main.CSV.Parser.Parser;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,11 +19,10 @@ import org.junit.Test;
  *
  * @param <T>
  */
-public class TestParser<T> {
+public class TestCSV<T> {
 
   private Reader filename;
   private boolean hasHeader;
-  private CreatorFromRow rowObject;
 
   /** Testing the case where Read takes in a file that does not exist */
   @Test
@@ -41,12 +40,12 @@ public class TestParser<T> {
 
   /** Tests the simple functionality of the parseUser function */
   @Test
-  public void testParseUser() throws IOException {
+  public void testParseUser() throws IOException, FactoryFailureException {
     this.filename =
         new FileReader("/Users/ericauguste/Desktop/CS32/csv-EAuguste25/data/stars/ten-star.csv");
 
     Parser<T> csvReader = new Parser<>(this.filename);
-    List<List<String>> result = csvReader.parseUser();
+    List<T> result = csvReader.parse();
     assertEquals(11, result.size()); // number of rows
   }
 

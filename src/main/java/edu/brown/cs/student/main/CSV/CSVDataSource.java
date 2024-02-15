@@ -1,35 +1,35 @@
-package edu.brown.cs.student.main.csv;
+package edu.brown.cs.student.main.CSV;
 
 import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Interfaces.CreatorFromRow;
-import edu.brown.cs.student.main.csv.Parser.Parser;
-import edu.brown.cs.student.main.csv.Parser.RetListString;
+import edu.brown.cs.student.main.CSV.Parser.Parser;
+import edu.brown.cs.student.main.CSV.Parser.RetListString;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.List;
 
-public class DataSource<T> {
+public class CSVDataSource<T> {
 
-  private List<List<String>> CSVData;
+  private List CSVData;
   public boolean isLoaded;
   private String filepath;
   private Search searcher;
 
-  public DataSource(String filePath) {
+  public CSVDataSource(String filePath) {
     this.filepath = filePath;
   }
 
-  public DataSource() {}
+  public CSVDataSource() {}
 
   public boolean loadCSV(String filePath) throws Exception {
     this.filepath = filePath;
     try {
-      Reader reader = new FileReader(filepath);
+      Reader reader = new FileReader(this.filepath);
       // CreatorFromRow<List<String>> creator = new MakeList();
-      CreatorFromRow<T> rowObject = new RetListString<>();
+      CreatorFromRow<T> rowObject = new RetListString<T>();
 
-      Parser CSVParser = new Parser(rowObject, reader);
+      Parser<T> CSVParser = new Parser<>(rowObject, reader);
       this.CSVData = CSVParser.parse();
       this.isLoaded = true;
       return true;
@@ -42,7 +42,11 @@ public class DataSource<T> {
     }
   }
 
-  public List<List<String>> getCSVData() throws FactoryFailureException, FileNotFoundException {
+  public List getCSVData() throws FactoryFailureException, FileNotFoundException {
     return this.CSVData;
+  }
+
+  public boolean getLoadStatus() {
+    return this.isLoaded;
   }
 }
