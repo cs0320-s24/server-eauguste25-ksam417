@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.CSV;
+package edu.brown.cs.student.main.csv.Records;
 
 public record LocationData(String state, String county) {
 

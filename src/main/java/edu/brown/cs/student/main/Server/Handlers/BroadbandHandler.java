@@ -5,13 +5,10 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.Exceptions.DatasourceException;
 import edu.brown.cs.student.main.Interfaces.ACSDataSource;
-import edu.brown.cs.student.main.CSV.ACSData;
-import edu.brown.cs.student.main.CSV.LocationData;
-import java.io.IOException;
+import edu.brown.cs.student.main.csv.Records.ACSData;
+import edu.brown.cs.student.main.csv.Records.LocationData;
+
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -75,15 +72,5 @@ public class BroadbandHandler implements Route {
     }
   }
 
-  private static HttpURLConnection connect(URL requestURL) throws DatasourceException, IOException {
-    URLConnection urlConnection = requestURL.openConnection();
-    if (!(urlConnection instanceof HttpURLConnection))
-      throw new DatasourceException("unexpected: result of connection wasn't HTTP");
-    HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
-    clientConnection.connect(); // GET
-    if (clientConnection.getResponseCode() != 200)
-      throw new DatasourceException(
-          "unexpected: API connection not success status " + clientConnection.getResponseMessage());
-    return clientConnection;
-  }
+
 }
