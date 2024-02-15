@@ -5,7 +5,28 @@ endpoints: loadcsv, viewcsv, searchcsv, and broadband which all have different f
 functions.
 
 Features:
-The Server and CSV packages each have their own respective packages where the functionalities
+The Server and CSV packages each have their own respective packages where the functionalities are
+implemented.
+
+These are as follows:
+Aside from Testing, the packages are split into four main groups: CSV, Exceptions, Interfaces and
+Server
+
+-  Exceptions
+  - There are two Exception files inside the Exceptions package: DatasourceException and
+    FactoryFailureException to help handle any errors that we come across in the program
+
+- Interfaces
+  - There are two Interfaces inside the main Interfaces package: ACSDataSource and CreatorFromRow.
+    CreatorFromRow is there to help with the Parser and Search implementation and ACSDataSource is
+    there to assist with any broadband and ACS Data handling.
+
+- CSV
+  - The CSV package is split into two main parts: one package named 'Parser' which contains all the
+    classes related to parsing a CSV file and the rest of the Classes are related to Searching and
+    handling the CSVDataSources.
+
+- Server
 
 
 Design:
