@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.csv;
+package edu.brown.cs.student.main.CSV;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

@@ -1,0 +1,17 @@
+Server
+This Server project has a command line interface that, once the program is run, displays a line
+linking to the localhost which is started at a specific port and allows the user to access different
+endpoints: loadcsv, viewcsv, searchcsv, and broadband which all have different features and
+functions.
+
+Features:
+The Server and CSV packages each have their own respective packages where the functionalities
+
+
+Design:
+
+
+Instructions for Use:
+
+Partners: Eric Auguste (eaugust5) and Korey Sam (ksam2)
+Repo:

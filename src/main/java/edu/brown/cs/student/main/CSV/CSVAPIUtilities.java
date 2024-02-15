@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.csv;
+package edu.brown.cs.student.main.CSV;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;

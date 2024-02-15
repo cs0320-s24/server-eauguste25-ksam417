@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.csv;
+package edu.brown.cs.student.main.CSV.Parser;
 
 import edu.brown.cs.student.main.Interfaces.CreatorFromRow;
 import java.util.ArrayList;
