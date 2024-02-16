@@ -21,11 +21,11 @@ The packages are split into five main groups: CSV, Exceptions, Interfaces, Serve
     there to assist with any broadband and ACS Data handling.
 
 - CSV
-  - The CSV package is split into three main parts: one package named 'Parser' which contains all
+  - The CSV package is split into five main parts: one package named Mock which contains some
+    handling for the mock testing to be done in TestACS, one package named 'Parser' which contains all
     the classes related to parsing a CSV file, another package named 'DataSource' pertaining to
     DataSources, and a third package named 'Records' which contains some Records classes which
-    assist in handling the ACS data. A Search class and a general CSVAPIUtilities also exist in the
-    general CSV Package.
+    assist in handling the ACS data. A Search class also exists in the general CSV Package.
 
 - Server
   - The Server package is split into three main parts: one package named 'Caching' which handles all
@@ -75,4 +75,4 @@ Instructions for Use:
       column header would be 'greeting'
 
 Partners: Eric Auguste (eaugust5) and Korey Sam (ksam2)
-Repo:**
+Repo: https://github.com/cs0320-s24/server-eauguste25-ksam417

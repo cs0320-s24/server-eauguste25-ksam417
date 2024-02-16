@@ -294,7 +294,6 @@ public class BroadbandDataSource {
    */
   public List<String> getInternetAccess(String state, String county) throws DatasourceException {
     try {
-      System.out.println("heeeee");
       System.out.println(county);
       System.out.println(state);
       String stateCode = this.returnStateName(state);

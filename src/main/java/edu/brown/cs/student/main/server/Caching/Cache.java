@@ -60,7 +60,7 @@ public class Cache {
 
     try {
       // Attempt to retrieve a result from a cache using the provided locationData as the key.
-      List<String> result = this.cache.get(locationData);
+      List<String> result = this.cache.getUnchecked(locationData);
       // If successful, return the result from the cache.
       return result;
     } catch (Exception e) {
@@ -72,6 +72,6 @@ public class Cache {
     // If the data was not found in the cache (or if an exception was caught),
     // attempt to retrieve the internet access information from a broadbandDataSource
     // using the county and state information from the provided locationData.
-    return this.broadbandDataSource.getInternetAccess(locationData.county(), locationData.state());
+    return this.broadbandDataSource.getInternetAccess(locationData.state(), locationData.county());
   }
 }

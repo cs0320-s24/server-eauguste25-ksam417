@@ -68,13 +68,11 @@ public class BroadbandHandler implements Route {
     Map<String, Object> responseMap = new HashMap<>();
 
     try {
-      System.out.println("yehhee heee");
       if (state == null || county == null) {
-        System.out.println("get good nigga");
         responseMap.put("type", "error");
         responseMap.put("errorType", "missing parameter");
       } else {
-        System.out.println("haha ha");
+
         List<String> returnData = this.cache.inCache(data);
         System.out.println(returnData);
         responseMap.put("type", "success");
