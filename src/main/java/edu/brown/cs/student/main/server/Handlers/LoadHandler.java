@@ -38,7 +38,6 @@ public class LoadHandler implements Route {
     this.source = source;
   }
 
-
   /**
    * Handles the loading of a CSV file, making sure that it is able to be parsed
    *
