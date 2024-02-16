@@ -39,7 +39,6 @@ public class Server {
   public static void main(String[] args) {
     int port = 3333;
     Spark.port(port);
-
     after(
         (request, response) -> {
           response.header("Access-Control-Allow-Origin", "*");
@@ -64,42 +63,12 @@ public class Server {
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {
-
     }
-
     System.out.println("Server started at http://localhost:" + port);
   }
 
   public void run() {
-    // possible root path?
 
-    //    this.scanner = new Scanner(System.in);
-    //    System.out.println("What is the path of the file you are searching?");
-    //    String csvPath = scanner.nextLine();
-    //    try {
-    //      DataSource source = new DataSource(csvPath);
-    //      Boolean isLoaded = source.loadCSV(csvPath);
-    //      if (isLoaded) {
-    //        List<List<String>> data = source.getCSVData();
-    //        this.parsedData = data;
-    //      } else {
-    //        System.out.println("The CSV file was unable to be loaded, please try again.");
-    //      }
-    //      System.out.println("What is the phrase that you are searching for in this file?");
-    //      // This set of methods refines the input
-    //      this.searchTerm = scanner.nextLine().toLowerCase().strip().replaceAll("[\"']", "");
-    //      this.handleColumn();
-    //
-    //    } catch (FileNotFoundException e) {
-    //      System.err.println("File Not Found");
-    //      System.exit(1);
-    //    } catch (IOException e) {
-    //      throw new RuntimeException(e);
-    //    } catch (FactoryFailureException e) {
-    //      throw new RuntimeException(e);
-    //    } catch (Exception e) {
-    //      throw new RuntimeException(e);
-    //    }
   }
 
   /**

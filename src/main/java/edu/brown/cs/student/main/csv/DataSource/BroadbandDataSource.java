@@ -214,6 +214,4 @@ public abstract class BroadbandDataSource {
         }
         return clientConnection;
     }
-
-    public abstract List<String> getBandWidth(String county, String state) throws DatasourceException;
 }
