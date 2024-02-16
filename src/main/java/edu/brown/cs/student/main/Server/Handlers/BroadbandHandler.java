@@ -7,7 +7,6 @@ import edu.brown.cs.student.main.Exceptions.DatasourceException;
 import edu.brown.cs.student.main.Interfaces.ACSDataSource;
 import edu.brown.cs.student.main.csv.Records.ACSData;
 import edu.brown.cs.student.main.csv.Records.LocationData;
-
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -71,6 +70,4 @@ public class BroadbandHandler implements Route {
       return adapter.toJson(responseMap);
     }
   }
-
-
 }

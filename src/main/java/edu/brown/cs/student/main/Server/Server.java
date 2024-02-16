@@ -2,14 +2,12 @@ package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
 import edu.brown.cs.student.main.Interfaces.ACSDataSource;
 import edu.brown.cs.student.main.Server.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
-import edu.brown.cs.student.main.CSV.Search;
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 import spark.Spark;
@@ -69,73 +67,5 @@ public class Server {
     System.out.println("Server started at http://localhost:" + port);
   }
 
-  public void run() {
-    // possible root path?
-
-    //    this.scanner = new Scanner(System.in);
-    //    System.out.println("What is the path of the file you are searching?");
-    //    String csvPath = scanner.nextLine();
-    //    try {
-    //      DataSource source = new DataSource(csvPath);
-    //      Boolean isLoaded = source.loadCSV(csvPath);
-    //      if (isLoaded) {
-    //        List<List<String>> data = source.getCSVData();
-    //        this.parsedData = data;
-    //      } else {
-    //        System.out.println("The CSV file was unable to be loaded, please try again.");
-    //      }
-    //      System.out.println("What is the phrase that you are searching for in this file?");
-    //      // This set of methods refines the input
-    //      this.searchTerm = scanner.nextLine().toLowerCase().strip().replaceAll("[\"']", "");
-    //      this.handleColumn();
-    //
-    //    } catch (FileNotFoundException e) {
-    //      System.err.println("File Not Found");
-    //      System.exit(1);
-    //    } catch (IOException e) {
-    //      throw new RuntimeException(e);
-    //    } catch (FactoryFailureException e) {
-    //      throw new RuntimeException(e);
-    //    } catch (Exception e) {
-    //      throw new RuntimeException(e);
-    //    }
-  }
-
-  /**
-   * A helper method which includes the logic for handling different user input in the terminal.
-   * Depends on whether there is a column identifier and whether a search term is found in the given
-   * file
-   *
-   * @throws FileNotFoundException
-   */
-  private void handleColumn() throws FileNotFoundException {
-    String hasColumnIdentifier = "";
-    while (!hasColumnIdentifier.equals("yes") && !hasColumnIdentifier.equals("no")) {
-      System.out.println("Do you know the header of the phrase you are looking for? (yes/no)");
-      hasColumnIdentifier = this.scanner.nextLine().toLowerCase().strip();
-    }
-    if (hasColumnIdentifier.equals("yes")) {
-      System.out.println("What is the column identifier?");
-      // makes sure that the column identifier accounts for discrepancies in the user input and the
-      // csv file
-      // TODO: add functionality for columnindex
-      this.columnIdentifier = this.scanner.nextLine().toLowerCase().strip();
-      Search search = new Search(this.parsedData, this.searchTerm, this.columnIdentifier);
-      List<List<String>> row = search.search();
-      // If the phrase doesn't exist or our parser didn't detect we have a different message
-      if (!row.isEmpty()) {
-        System.out.println("The matching rows you are looking for in the data are: " + row);
-      } else {
-        System.out.println("The word hasn't been found in the file.");
-      }
-    } else {
-      Search search = new Search(this.parsedData, this.searchTerm);
-      List<List<String>> row = search.search();
-      if (!row.isEmpty()) {
-        System.out.println("The rows of the data you are looking for are: " + row);
-      } else {
-        System.out.println("The word hasn't been found in the file :(");
-      }
-    }
-  }
+  public void run() {}
 }

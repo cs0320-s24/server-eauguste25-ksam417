@@ -26,6 +26,7 @@ public class SearchHandler implements Route {
   /**
    * A constructor for the SearchHandler class which takes in a LoadHandler and a CSVDataSource in
    * order to conduct a search on a loaded CSV file
+   *
    * @param loadHandler
    * @param source
    */
@@ -36,6 +37,7 @@ public class SearchHandler implements Route {
 
   /**
    * Handles the search functionality after a CSV file is loaded in
+   *
    * @param request
    * @param response
    * @return
@@ -66,45 +68,36 @@ public class SearchHandler implements Route {
     String filePath = this.loadHandler.getFilePath();
     boolean isLoaded = this.source.loadCSV(filePath);
 
-    try {
-      if (isLoaded) {
-        List matchingRows;
-        if (this.colHeader != null) {
-          this.search = new Search(this.source.getCSVData(), this.searchterm, this.colHeader);
-          matchingRows = this.search.search();
-          responseMap.put("type", "success");
-          responseMap.put("searchterm", this.searchterm);
-          responseMap.put("column_header:", this.colHeader);
-          responseMap.put("matching rows: ", matchingRows);
-        }
-        if (this.colIndex != null) {
-          this.search = new Search(this.source.getCSVData(), this.searchterm, this.colIndex);
-          matchingRows = this.search.search();
-          responseMap.put("type", "success");
-          responseMap.put("searchterm", this.searchterm);
-          responseMap.put("column_index:", this.colIndex);
-          responseMap.put("matching rows: ", matchingRows);
-        } else {
-          this.search = new Search(this.source.getCSVData(), this.searchterm);
-          matchingRows = this.search.search();
-          if (!matchingRows.isEmpty()) {
-            responseMap.put("type", "success");
-            responseMap.put("searchterm", this.searchterm);
-            responseMap.put("matching rows: ", matchingRows);
-          } else {
-            responseMap.put("type", "success");
-            responseMap.put("result", "No matching rows were found. Please try again.");
-          }
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    if (!isLoaded) {
       responseMap.put("result", "error");
-      // put the rows that match the search term in the responseMap
+      responseMap.put("message", "Failed to load CSV file.");
       return jsonAdapter.toJson(responseMap);
     }
 
-    // return the adapted version of the responseMap
+    try {
+      List matchingRows;
+      if (this.colHeader != null) {
+        this.search = new Search(this.source.getCSVData(), this.searchterm, this.colHeader);
+      } else if (this.colIndex != null) {
+        this.search = new Search(this.source.getCSVData(), this.searchterm, this.colIndex);
+      } else {
+        this.search = new Search(this.source.getCSVData(), this.searchterm);
+      }
+      matchingRows = this.search.search();
+
+      responseMap.put("type", "success");
+      responseMap.put("searchterm", this.searchterm);
+      if (this.colHeader != null) {
+        responseMap.put("column_header", this.colHeader);
+      } else if (this.colIndex != null) {
+        responseMap.put("column_index", this.colIndex);
+      }
+      responseMap.put("matching_rows", matchingRows);
+    } catch (Exception e) {
+      responseMap.put("result", "error");
+      responseMap.put("message", e.getMessage()); // Provide error message
+    }
+
     return jsonAdapter.toJson(responseMap);
   }
 

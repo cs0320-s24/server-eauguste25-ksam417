@@ -43,8 +43,8 @@ public class Parser<T> {
    * @return a List of Lists of Strings representing the rows in a CSV file
    * @throws IOException
    */
-  public List<List<String>> parseUser() throws IOException {
-    List parsedCSVUser = new ArrayList<>();
+  public List<List<Object>> parseUser() throws IOException {
+    List<List<Object>> parsedCSVUser = new ArrayList<>();
 
     try (BufferedReader bufferedReader = new BufferedReader(this.reader)) {
       String line = bufferedReader.readLine();
@@ -52,7 +52,24 @@ public class Parser<T> {
       while (line != null) {
         try {
           String[] words = regexSplitCSVRow.split(line);
-          List<String> wordList = List.of(words);
+          List<Object> wordList = new ArrayList<>();
+
+          for (String word : words) {
+            if (word.startsWith("\"") && word.endsWith("\"")) {
+              // Remove the quotes and add the word as a string
+              word = word.substring(1, word.length() - 1);
+              wordList.add(word);
+            } else {
+              // Try parsing each word as a number
+              try {
+                wordList.add(Double.parseDouble(word));
+              } catch (NumberFormatException e) {
+                // If parsing fails, add the word as a string
+                wordList.add(word);
+              }
+            }
+          }
+
           parsedCSVUser.add(wordList);
         } catch (NullPointerException npe) {
           System.out.println("An error occurred, please try again.");
@@ -76,7 +93,7 @@ public class Parser<T> {
     if (this.creator == null) {
       throw new FactoryFailureException("CreatorFromRow is not initialized", null);
     }
-    List<List<String>> userCSV = new ArrayList<>();
+    List<List<Object>> userCSV = new ArrayList<>();
     try {
       userCSV = this.parseUser();
     } catch (IOException e) {
@@ -84,7 +101,7 @@ public class Parser<T> {
     }
     List<T> parsedCSVDeveloper = new ArrayList<>();
 
-    for (List<String> row : userCSV) {
+    for (List<Object> row : userCSV) {
       T newRow = this.creator.create(row);
       parsedCSVDeveloper.add(newRow);
     }

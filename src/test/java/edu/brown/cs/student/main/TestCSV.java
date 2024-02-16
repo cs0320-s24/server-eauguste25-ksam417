@@ -3,8 +3,8 @@ package edu.brown.cs.student.main;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.CSV.Parser.Parser;
+import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class TestCSV<T> {
     String stringCSV = "Eric,21,Boston\nJavier,22,Providence\nAuguste,23,New York";
     Reader stringReader = new StringReader(stringCSV);
     Parser<T> csvReader = new Parser<>(stringReader);
-    List<List<String>> result = csvReader.parseUser();
+    List<List<Object>> result = csvReader.parseUser();
     assertEquals(3, result.size()); // Three rows
     assertEquals(List.of("Javier", "22", "Providence"), result.get(1)); // Second data row
   }
@@ -66,7 +66,7 @@ public class TestCSV<T> {
     String stringCSV = "Name,Age,Location\nEric,21,Boston\nJavier,22,Providence";
     Reader stringReader = new StringReader(stringCSV);
     Parser<T> csvReader = new Parser(stringReader);
-    List<List<String>> result = csvReader.parseUser();
+    List<List<Object>> result = csvReader.parseUser();
     assertEquals(3, result.size());
     assertEquals(List.of("Name", "Age", "Location"), result.get(0)); // Header row
   }
@@ -79,7 +79,7 @@ public class TestCSV<T> {
             "/Users/ericauguste/Desktop/CS32/csv-EAuguste25/data/malformed/malformed_signs.csv");
 
     Parser<T> csvReader = new Parser<>(this.filename);
-    List<List<String>> result = csvReader.parseUser();
+    List<List<Object>> result = csvReader.parseUser();
     assertEquals(13, result.size()); // number of rows
   }
 
@@ -91,7 +91,7 @@ public class TestCSV<T> {
             "/Users/ericauguste/Desktop/CS32/csv-EAuguste25/data/withoutHeader/no-header-ten-star.csv");
 
     Parser<T> csvReader = new Parser<>(this.filename);
-    List<List<String>> result = csvReader.parseUser();
+    List<List<Object>> result = csvReader.parseUser();
     assertEquals(10, result.size()); // number of rows
   }
 
@@ -114,7 +114,7 @@ public class TestCSV<T> {
             "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/RI City & Town Income from American Community Survey 5-Year Estimates Source_ US Census Bureau, 2017-2021 American Community Survey 5-Year Estimates 2017-2021 - Sheet1.csv");
 
     Parser<T> csvReader = new Parser<>(this.filename);
-    List<List<String>> result = csvReader.parseUser();
+    List<List<Object>> result = csvReader.parseUser();
     assertEquals(41, result.size()); // number of rows
   }
 }
