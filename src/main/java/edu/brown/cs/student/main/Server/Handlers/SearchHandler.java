@@ -76,23 +76,45 @@ public class SearchHandler implements Route {
 
     try {
       List matchingRows;
+      List<List<Object>> csvData = this.source.getCSVData(); // Retrieve CSV data
+      List<Object> headerRow = csvData.isEmpty() ? null : csvData.get(0); // Extract header row
       if (this.colHeader != null) {
+        if (!headerRow.contains(this.colHeader)) {
+          responseMap.put(
+              "message",
+              "The column header: " + this.colHeader + " was not found " + "in the CSV file.");
+          responseMap.put("valid column headers", headerRow);
+        }
         this.search = new Search(this.source.getCSVData(), this.searchterm, this.colHeader);
       } else if (this.colIndex != null) {
+        if (Integer.parseInt(this.colIndex) <= headerRow.size()) {
+          responseMap.put(
+              "message",
+              "The column index " + this.colIndex + " was not found " + "in the CSV file.");
+          responseMap.put("number of columns", headerRow.size());
+        }
         this.search = new Search(this.source.getCSVData(), this.searchterm, this.colIndex);
       } else {
         this.search = new Search(this.source.getCSVData(), this.searchterm);
       }
       matchingRows = this.search.search();
-
-      responseMap.put("type", "success");
+      if (!matchingRows.isEmpty()) {
+        responseMap.put("type", "success");
+      }
       responseMap.put("searchterm", this.searchterm);
       if (this.colHeader != null) {
         responseMap.put("column_header", this.colHeader);
       } else if (this.colIndex != null) {
         responseMap.put("column_index", this.colIndex);
       }
-      responseMap.put("matching_rows", matchingRows);
+      if (matchingRows.isEmpty()) {
+        responseMap.put("result", "error");
+        responseMap.put(
+            "message",
+            "No matching rows were found in the search. Please try another " + "search term.");
+      } else {
+        responseMap.put("matching_rows", matchingRows);
+      }
     } catch (Exception e) {
       responseMap.put("result", "error");
       responseMap.put("message", e.getMessage()); // Provide error message

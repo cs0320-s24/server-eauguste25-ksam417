@@ -1,27 +1,28 @@
-package edu.brown.cs.student.main.Server.Handlers;
+ package edu.brown.cs.student.main.Server.Handlers;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.CSV.DataSource.BroadbandDataSource;
-import edu.brown.cs.student.main.Exceptions.DatasourceException;
-import java.lang.reflect.Type;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import spark.Request;
-import spark.Response;
-import spark.Route;
+ import com.squareup.moshi.JsonAdapter;
+ import com.squareup.moshi.Moshi;
+ import com.squareup.moshi.Types;
+ import edu.brown.cs.student.main.CSV.DataSource.BroadbandDataSource;
+ import edu.brown.cs.student.main.Exceptions.DatasourceException;
+ import java.lang.reflect.Type;
+ import java.time.LocalDateTime;
+ import java.time.format.DateTimeFormatter;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+ import spark.Request;
+ import spark.Response;
+ import spark.Route;
 
-/**
+/ **
  * Endpoint which sends back the broadband data from the ACS described.
  *
- * <p>Include date and time that all data was retrieved from the ACS API by your API server, as well
+ * <p>Include date and time that all data was retrieved from the ACS API by your API server, as
+ well
  * as the state and county names your server received.
  */
-public class BroadbandHandler implements Route {
+ public class BroadbandHandler implements Route {
 
   private final BroadbandDataSource broadbandDataSource;
 
@@ -66,4 +67,4 @@ public class BroadbandHandler implements Route {
     }
     return adapter.toJson(responseMap);
   }
-}
+ }

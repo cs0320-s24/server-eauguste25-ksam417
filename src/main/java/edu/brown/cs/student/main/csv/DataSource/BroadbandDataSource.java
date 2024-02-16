@@ -1,24 +1,24 @@
-package edu.brown.cs.student.main.CSV.DataSource;
+ package edu.brown.cs.student.main.CSV.DataSource;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
-import edu.brown.cs.student.main.Exceptions.DatasourceException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import okio.Buffer;
+ import com.squareup.moshi.JsonAdapter;
+ import com.squareup.moshi.Moshi;
+ import com.squareup.moshi.Types;
+ import edu.brown.cs.student.main.Exceptions.DatasourceException;
+ import java.io.BufferedReader;
+ import java.io.IOException;
+ import java.io.InputStreamReader;
+ import java.lang.reflect.Type;
+ import java.net.HttpURLConnection;
+ import java.net.URL;
+ import java.net.URLConnection;
+ import java.time.LocalDate;
+ import java.time.LocalTime;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.List;
+ import okio.Buffer;
 
-public abstract class BroadbandDataSource {
+ public abstract class BroadbandDataSource {
 
   private List<List<String>> stateCodes;
 
@@ -39,7 +39,8 @@ public abstract class BroadbandDataSource {
       Moshi moshi = new Moshi.Builder().build();
       JsonAdapter<List> adapter = moshi.adapter(List.class).nonNull();
       // NOTE: important! pattern for handling the input stream
-      this.stateCodes = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+      this.stateCodes = adapter.fromJson(new
+ Buffer().readFrom(clientConnection.getInputStream()));
       clientConnection.disconnect();
       if (stateCodes.isEmpty())
         throw new DatasourceException("Malformed response from NWS");
@@ -60,7 +61,6 @@ public abstract class BroadbandDataSource {
         // Handle the exception (e.g., log it) or set a default value for stateCodes
         this.stateCodes = new ArrayList<>();
       }
-=======
       private List<List<String>> stateCodes;
 
     public BroadbandDataSource() throws DatasourceException {
@@ -84,8 +84,9 @@ public abstract class BroadbandDataSource {
           this.stateCodes = adapter.fromJson(
               new Buffer().readFrom(clientConnection.getInputStream()));
           clientConnection.disconnect();
-          if (this.stateCodes.isEmpty())
+          if (this.stateCodes.isEmpty()) {
             throw new DatasourceException("Malformed response from NWS");
+          }
           return this.stateCodes;
         } catch (IOException e) {
           throw new DatasourceException(e.getMessage());
@@ -100,20 +101,22 @@ public abstract class BroadbandDataSource {
      * @return
      * @throws DatasourceException
      */
-    public List<List<String>> returnStateCounties (String stateCode) throws DatasourceException {
+    public List<List<String>> returnStateCounties (String stateCode) throws DatasourceException
+    List<List<String>> countyList;
+    {
       try {
         URL requestURL =
             new URL(
                 "https",
                 "api.census.gov",
-                "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:"
+
+ "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:"
                     + stateCode);
         HttpURLConnection clientConnection = connect(requestURL);
         Moshi moshi = new Moshi.Builder().build();
         JsonAdapter<List> adapter = moshi.adapter(List.class).nonNull();
         // NOTE: important! pattern for handling the input stream
-        List<List<String>> countyList =
-            adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+        countyList = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
         clientConnection.disconnect();
         if (countyList.isEmpty()) {
           throw new DatasourceException("Malformed response from ACS");
@@ -155,7 +158,6 @@ public abstract class BroadbandDataSource {
           stateCode = strings.get(3);
         }
       }
-<<<<<<<HEAD
       if (!stateCode.equals("*")) {
         return stateCode;
       } else {
@@ -207,7 +209,8 @@ public abstract class BroadbandDataSource {
       }
 
       if (data == null) {
-        // This is to ensure that we never return null. Throw an appropriate exception or return an
+        // This is to ensure that we never return null. Throw an appropriate exception or return
+ an
         // empty list.
         throw new DatasourceException("Failed to parse JSON response");
       }
@@ -216,14 +219,16 @@ public abstract class BroadbandDataSource {
     }
 
     /**
-     * Returns a JSON of the bandwidth, date and time by calling on the helper methods in the class
+     * Returns a JSON of the bandwidth, date and time by calling on the helper methods in the
+ class
      *
      * @param county
      * @param state
      * @return a List that includes the bandwith of internet access for the queried state/county
      * @throws DatasourceException
      */
-    public List<String> getInternetAccess (String county, String state) throws DatasourceException {
+    public List<String> getInternetAccess (String county, String state) throws DatasourceException
+ {
       try {
         String stateCode = this.returnStateName(state);
         String countyCode = this.returnCountyCode(this.returnStateCounties(stateCode), county);
@@ -248,8 +253,9 @@ public abstract class BroadbandDataSource {
         result.add("Date:" + date);
         result.add("Current time:" + time);
 
-        if (result.isEmpty())
+        if (result.isEmpty()) {
           throw new DatasourceException("Malformed response from ACS");
+        }
         return new ArrayList<>(result);
 
       } catch (IOException e) {
@@ -260,8 +266,9 @@ public abstract class BroadbandDataSource {
     private static HttpURLConnection connect (URL requestURL) throws
     DatasourceException, IOException {
       URLConnection urlConnection = requestURL.openConnection();
-      if (!(urlConnection instanceof HttpURLConnection))
+      if (!(urlConnection instanceof HttpURLConnection)) {
         throw new DatasourceException("unexpected: result of connection wasn't HTTP");
+      }
       HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
       clientConnection.connect(); // GET
       if (clientConnection.getResponseCode() != 200) {
@@ -273,7 +280,8 @@ public abstract class BroadbandDataSource {
     }
 
     /**
-     * This helper returns a list of list strings from the narrowed down list that we have of a specific county
+     * This helper returns a list of list strings from the narrowed down list that we have of a
+ specific county
      * @param requestURL
      * @return
      * @throws DatasourceException
@@ -312,27 +320,31 @@ public abstract class BroadbandDataSource {
         }
       }
       if (data == null) {
-        // This is to ensure that we never return null. Throw an appropriate exception or return an empty list.
+        // This is to ensure that we never return null. Throw an appropriate exception or return
+ an empty list.
         throw new DatasourceException("Failed to parse JSON response");
       }
       return data;
     }
 
     /**
-     * Returns a JSON of the bandwidth, date and time by calling on the helper methods in the class
+     * Returns a JSON of the bandwidth, date and time by calling on the helper methods in the
+ class
      * @param county
      * @param state
      * @return a List that includes the bandwith of internet access for the queried state/county
      * @throws DatasourceException
      */
-    public List<String> getInternetAccess (String county, String state) throws DatasourceException {
+    public List<String> getInternetAccess (String county, String state) throws DatasourceException
+ {
       try {
         String stateCode = this.returnStateName(state);
         String countyCode = this.returnCountyCode(this.returnStateCounties(stateCode), county);
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
         URL requestURL = new URL("https", "api.census.gov",
-            "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:" + countyCode
+            "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:" +
+ countyCode
                 + "&in=state:" + stateCode);
         List<List<String>> data = this.getDataFromURL(requestURL);
 
@@ -345,8 +357,9 @@ public abstract class BroadbandDataSource {
         result.add("Date:" + date);
         result.add("Current time:" + time);
 
-        if (result.isEmpty())
+        if (result.isEmpty()) {
           throw new DatasourceException("Malformed response from ACS");
+        }
         return new ArrayList<>(result);
 
       } catch (IOException e) {
@@ -357,8 +370,9 @@ public abstract class BroadbandDataSource {
     private static HttpURLConnection connect (URL requestURL) throws
     DatasourceException, IOException {
       URLConnection urlConnection = requestURL.openConnection();
-      if (!(urlConnection instanceof HttpURLConnection))
+      if (!(urlConnection instanceof HttpURLConnection)) {
         throw new DatasourceException("unexpected: result of connection wasn't HTTP");
+      }
       HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
       clientConnection.connect(); // GET
       if (clientConnection.getResponseCode() != 200) {
@@ -372,4 +386,4 @@ public abstract class BroadbandDataSource {
     public abstract List<String> getBandWidth (String county, String state) throws
     DatasourceException;
   }
-}
+ }
