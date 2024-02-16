@@ -27,8 +27,9 @@ public class LoadHandler implements Route {
   private boolean loadStatus;
 
   /**
-   * Constructor for LoadHandler that takes in a CSVDataSource and a String filepath to load and
-   * set up for other endpoints
+   * Constructor for LoadHandler that takes in a CSVDataSource and a String filepath to load and set
+   * up for other endpoints
+   *
    * @param source
    * @param filePath
    */
@@ -44,6 +45,7 @@ public class LoadHandler implements Route {
 
   /**
    * Handles the loading of a CSV file, making sure that it is able to be parsed
+   *
    * @param request
    * @param response
    * @return
@@ -60,7 +62,6 @@ public class LoadHandler implements Route {
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
 
-
     this.source.loadCSV(this.filePath);
     this.loadStatus = this.source.getLoadStatus();
     this.data = this.source.getCSVData();
@@ -70,7 +71,7 @@ public class LoadHandler implements Route {
       if (this.loadStatus) {
         responseMap.put("type", "success");
         responseMap.put("filepath", this.filePath);
-      // if the csv file is not loaded
+        // if the csv file is not loaded
       } else {
         responseMap.put("type", "error");
         responseMap.put("details", "Failed to load CSV file");
@@ -87,6 +88,7 @@ public class LoadHandler implements Route {
 
   /**
    * Getter method for the file path field
+   *
    * @return a String representing the filePath
    */
   public String getFilePath() {
@@ -95,6 +97,7 @@ public class LoadHandler implements Route {
 
   /**
    * Getter method for the CSVDataSource
+   *
    * @return a CSVDataSource
    */
   public CSVDataSource getSource() {
@@ -103,6 +106,7 @@ public class LoadHandler implements Route {
 
   /**
    * Getter method for the CSV data
+   *
    * @return the data of a CSV file
    */
   public List getData() {

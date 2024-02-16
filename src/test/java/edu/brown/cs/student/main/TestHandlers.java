@@ -1,13 +1,14 @@
 package edu.brown.cs.student.main;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
+import edu.brown.cs.student.main.CSV.Search;
 import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
-import edu.brown.cs.student.main.CSV.Search;
 import java.io.FileNotFoundException;
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +59,19 @@ public class TestHandlers {
   }
 
   /**
+   * Tests the getCSVData method on a loaded CSV file
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testGetCSVDataAfterLoading() throws Exception {
+    this.setUp();
+    this.source.loadCSV(
+        "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv");
+    assertNotNull(this.source.getCSVData());
+  }
+
+  /**
    * This method tests whether ViewHandler is able to access loaded CSV data
    *
    * @throws Exception
@@ -74,5 +88,19 @@ public class TestHandlers {
     this.setUp();
     System.out.println(this.searchHandler.getSource());
     this.tearDown();
+  }
+
+  /**
+   * Test search loaded CSv with no identifier
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testSearchWithoutHeader() throws Exception {
+    this.source.loadCSV(
+        "/Users/ruthukubay/Desktop/CSCI0320/server-NdichuMuigai-RuthUkubay/Data/dol_ri_earnings_disparity.csv");
+    this.searchHandler.getSource().getCSVData();
+    // this.searchHandler.searchTerm("Black");
+
   }
 }

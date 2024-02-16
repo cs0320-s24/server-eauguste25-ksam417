@@ -20,6 +20,7 @@ public class ViewHandler implements Route {
   /**
    * A constructor for the ViewHandler class which takes in a LoadHandler object and a CSVDataSource
    * in order to view the entirety of a CSV file as a JSON 2-dimensional array
+   *
    * @param loadHandler
    * @param source
    */
@@ -30,6 +31,7 @@ public class ViewHandler implements Route {
 
   /**
    * Handles the functionality for viewing a CSV file in the browser
+   *
    * @param request
    * @param response
    * @return

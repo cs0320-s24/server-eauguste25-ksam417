@@ -48,8 +48,7 @@ public class BroadbandHandler implements Route {
       if (state == null || county == null) {
         responseMap.put("type", "error");
         responseMap.put("errorType", "missing parameter");
-      }
-      else{
+      } else {
         List<String> data = this.broadbandDataSource.getInternetAccess(state, county);
         responseMap.put("type", "success");
         responseMap.put("Date/Time", timeFormatter.format(requestTime));
