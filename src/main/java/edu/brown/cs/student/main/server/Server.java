@@ -3,6 +3,7 @@ package edu.brown.cs.student.main.Server;
 import static spark.Spark.after;
 
 import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
+import edu.brown.cs.student.main.Server.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
@@ -27,7 +28,6 @@ public class Server {
   public static void main(String[] args) {
     int port = 3333;
     Spark.port(port);
-
     after(
         (request, response) -> {
           response.header("Access-Control-Allow-Origin", "*");
@@ -48,13 +48,11 @@ public class Server {
       Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
       /** Endpoint which sends back rows matching the given search criteria. */
       Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
-      // Spark.get("broadband", new BroadbandHandler(broadbandDataSource));
+      Spark.get("broadband", new BroadbandHandler());
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {
-
     }
-
     System.out.println("Server started at http://localhost:" + port);
   }
 

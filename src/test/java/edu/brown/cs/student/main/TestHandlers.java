@@ -1,15 +1,15 @@
 package edu.brown.cs.student.main;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
 import edu.brown.cs.student.main.CSV.Search;
-import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import java.io.FileNotFoundException;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 public class TestHandlers {
   private LoadHandler loadHandler;
   private CSVDataSource source;
+  private List<List<Object>> csvData;
   private String colHeader;
   private int colIndex;
   private String searchTerm;
@@ -24,7 +25,7 @@ public class TestHandlers {
   private SearchHandler searchHandler;
 
   @Before
-  public void setUp() throws FileNotFoundException, FactoryFailureException {
+  public void setUp() throws Exception {
     this.source = new CSVDataSource();
 
     this.loadHandler =
@@ -34,6 +35,15 @@ public class TestHandlers {
 
     this.viewHandler = new ViewHandler(this.loadHandler, this.loadHandler.getSource());
     this.searchHandler = new SearchHandler(this.loadHandler, this.loadHandler.getSource());
+
+    // Load CSV data
+    this.source.loadCSV(
+        "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv");
+
+    // Retrieve CSV data
+    this.csvData = this.source.getCSVData();
+
+    // Parse CSV data
     Search searcherWithHeader =
         new Search(this.source.getCSVData(), this.searchTerm, this.colHeader);
     Search searchWithIndex = new Search(this.source.getCSVData(), this.searchTerm, this.colIndex);
@@ -51,56 +61,31 @@ public class TestHandlers {
   @Test
   public void testLoadCSVTrue() throws Exception {
     this.setUp();
-    assertTrue(
-        this.source.loadCSV(
-            "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv"));
-    System.out.println(this.source.isLoaded);
+    assertTrue(this.source.getLoadStatus());
     this.tearDown();
   }
 
   /**
-   * Tests the getCSVData method on a loaded CSV file
+   * This method tests whether the isLoaded status returns false on a data Source that isn't loaded
    *
    * @throws Exception
    */
+  @Test
+  public void testLoadCSVFalse() throws Exception {
+    CSVDataSource data = new CSVDataSource();
+    assertFalse(data.getLoadStatus());
+  }
+
+  /** Tests the getCSVData method on a loaded CSV file */
   @Test
   public void testGetCSVDataAfterLoading() throws Exception {
     this.setUp();
-    this.source.loadCSV(
-        "/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity.csv");
-    assertNotNull(this.source.getCSVData());
-  }
-
-  /**
-   * This method tests whether ViewHandler is able to access loaded CSV data
-   *
-   * @throws Exception
-   */
-  @Test
-  public void testViewHandlerData() throws Exception {
-    this.setUp();
-
+    assertNotNull(this.csvData);
     this.tearDown();
   }
 
   @Test
-  public void testSearchHandler() throws Exception {
-    this.setUp();
-    System.out.println(this.searchHandler.getSource());
-    this.tearDown();
-  }
-
-  /**
-   * Test search loaded CSv with no identifier
-   *
-   * @throws Exception
-   */
-  @Test
-  public void testSearchWithoutHeader() throws Exception {
-    this.source.loadCSV(
-        "/Users/ruthukubay/Desktop/CSCI0320/server-NdichuMuigai-RuthUkubay/Data/dol_ri_earnings_disparity.csv");
-    this.searchHandler.getSource().getCSVData();
-    // this.searchHandler.searchTerm("Black");
+  public void testLoadAndView() throws Exception {
 
   }
 }

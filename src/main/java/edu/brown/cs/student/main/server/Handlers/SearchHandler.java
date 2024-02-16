@@ -132,11 +132,11 @@ public class SearchHandler implements Route {
     return this.searchterm;
   }
 
-  public String colHeader() {
+  public String getcolHeader() {
     return this.colHeader;
   }
 
-  public int colIndex() {
+  public int getcolIndex() {
     return Integer.parseInt(this.colIndex);
   }
 
