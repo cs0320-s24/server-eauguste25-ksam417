@@ -1,15 +1,14 @@
-package edu.brown.cs.student.main.Server;
+package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
 import edu.brown.cs.student.main.CSV.DataSource.BroadbandDataSource;
 import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
 import edu.brown.cs.student.main.CSV.Search;
-import edu.brown.cs.student.main.Server.Handlers.BroadbandHandler;
-import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
-import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
-import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-
+import edu.brown.cs.student.main.server.Handlers.BroadbandHandler;
+import edu.brown.cs.student.main.server.Handlers.LoadHandler;
+import edu.brown.cs.student.main.server.Handlers.SearchHandler;
+import edu.brown.cs.student.main.server.Handlers.ViewHandler;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
@@ -59,7 +58,7 @@ public class Server {
       Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
       /** Endpoint which sends back rows matching the given search criteria. */
       Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
-      Spark.get("broadband", new BroadbandHandler(broadbandDataSource));
+      Spark.get("broadband", new BroadbandHandler());
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {
@@ -67,9 +66,7 @@ public class Server {
     System.out.println("Server started at http://localhost:" + port);
   }
 
-  public void run() {
-
-  }
+  public void run() {}
 
   /**
    * A helper method which includes the logic for handling different user input in the terminal.

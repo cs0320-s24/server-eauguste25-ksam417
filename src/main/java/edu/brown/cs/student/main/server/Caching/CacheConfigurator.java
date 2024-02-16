@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.Server.Caching;
+package edu.brown.cs.student.main.server.Caching;
 
 import java.util.concurrent.TimeUnit;
 
@@ -9,10 +9,9 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfigurator {
   private long maximumSize = 100; // Default maximum size
   private long expireAfterWriteMinutes = 60; // Default expiration time (in minutes)
-    private TimeUnit timeUnit = TimeUnit.MINUTES; // Default time unit
+  private TimeUnit timeUnit = TimeUnit.MINUTES; // Default time unit
 
-    public CacheConfigurator(){}
-
+  public CacheConfigurator() {}
 
   // Getter and setter for maximumSize
   public long getMaximumSize() {
@@ -28,23 +27,22 @@ public class CacheConfigurator {
     return expireAfterWriteMinutes;
   }
 
-    // Getter and setter for expireAfterWriteMinutes
-    public long getExpireAfterWrite() {
-        return this.expireAfterWriteMinutes;
-    }
+  // Getter and setter for expireAfterWriteMinutes
+  public long getExpireAfterWrite() {
+    return this.expireAfterWriteMinutes;
+  }
 
-    public void setExpireAfterWriteMinutes(long expireAfterWriteMinutes) {
-        this.expireAfterWriteMinutes = expireAfterWriteMinutes;
-    }
+  public void setExpireAfterWriteMinutes(long expireAfterWriteMinutes) {
+    this.expireAfterWriteMinutes = expireAfterWriteMinutes;
+  }
 
-    // Getter for timeUnit
-    public TimeUnit getTimeUnit() {
-        return timeUnit;
-    }
+  // Getter for timeUnit
+  public TimeUnit getTimeUnit() {
+    return timeUnit;
+  }
 
-    // Setter for timeUnit
-    public void setTimeUnit(TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
-    }
-
+  // Setter for timeUnit
+  public void setTimeUnit(TimeUnit timeUnit) {
+    this.timeUnit = timeUnit;
+  }
 }
