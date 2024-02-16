@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.csv.DataSource;
+package edu.brown.cs.student.main.CSV.DataSource;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BroadbandDataSource {
+public abstract class BroadbandDataSource {
 
     private List<List<String>> stateCodes;
 
-    public BroadbandDataSource(){
+    public BroadbandDataSource() throws DatasourceException {
+        this.ensureStateCodesInitialized();
 
     }
 
@@ -42,13 +43,12 @@ public class BroadbandDataSource {
             // NOTE: important! pattern for handling the input stream
             this.stateCodes = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
             clientConnection.disconnect();
-            if(stateCodes.isEmpty())
+            if(this.stateCodes.isEmpty())
                 throw new DatasourceException("Malformed response from NWS");
             return this.stateCodes;
         } catch(IOException e) {
             throw new DatasourceException(e.getMessage());
         }
-
     }
 
     /**
@@ -161,12 +161,10 @@ public class BroadbandDataSource {
                 connection.disconnect();
             }
         }
-
         if (data == null) {
             // This is to ensure that we never return null. Throw an appropriate exception or return an empty list.
             throw new DatasourceException("Failed to parse JSON response");
         }
-
         return data;
     }
 
@@ -187,8 +185,8 @@ public class BroadbandDataSource {
             List<List<String>> data = this.getDataFromURL(requestURL);
 
 
-            Moshi moshi = new Moshi.Builder().build();
-            JsonAdapter<List> adapter = moshi.adapter(List.class).nonNull();
+//            Moshi moshi = new Moshi.Builder().build();
+//            JsonAdapter<List> adapter = moshi.adapter(List.class).nonNull();
             List<String> result = new ArrayList<>();
             result.add("Band Width:" + data.get(1).get(1));
             result.add("State:" + state);
@@ -217,4 +215,5 @@ public class BroadbandDataSource {
         return clientConnection;
     }
 
+    public abstract List<String> getBandWidth(String county, String state) throws DatasourceException;
 }
