@@ -1,18 +1,33 @@
 package edu.brown.cs.student.main;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static spark.Spark.after;
 
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
 import edu.brown.cs.student.main.CSV.Search;
+import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
+import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import spark.Spark;
+import spark.Request;
+import spark.Response;
 
 public class TestHandlers {
   private LoadHandler loadHandler;
@@ -24,7 +39,7 @@ public class TestHandlers {
   private ViewHandler viewHandler;
   private SearchHandler searchHandler;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     this.source = new CSVDataSource();
 
@@ -48,10 +63,41 @@ public class TestHandlers {
         new Search(this.source.getCSVData(), this.searchTerm, this.colHeader);
     Search searchWithIndex = new Search(this.source.getCSVData(), this.searchTerm, this.colIndex);
     Search searchWithoutIdentifier = new Search(this.source.getCSVData(), this.searchTerm);
+
   }
 
-  @After
-  public void tearDown() {}
+  @AfterEach
+  public void tearDown() {
+  }
+
+  @Test
+  public void testNoHeadersOnSecondLoad() throws Exception {
+    // View CSV (expecting headers)
+
+    String firstResponse = viewCSV();
+    assertEquals("[[State, Data Type, Average Weekly Earnings, Number of Workers, Earnings Disparity, Employed Percent], [RI, White,  $1,058.47 , 395773.6521,  $1.00 , 75%], [RI, Black,  $770.26 , 30424.80376,  $0.73 , 6%], [RI, Native American/American Indian,  $471.07 , 2315.505646,  $0.45 , 0%], [RI, Asian-Pacific Islander,  $1,080.09 , 18956.71657,  $1.02 , 4%], [RI, Hispanic/Latino,  $673.14 , 74596.18851,  $0.64 , 14%], [RI, Multiracial,  $971.89 , 8883.049171,  $0.92 , 2%]]",
+        firstResponse);
+
+    // Load CSV without headers
+    loadCSV("/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/dol_ri_earnings_disparity_no_headers.csv");
+
+    // View CSV (expecting no headers)
+    String secondResponse = viewCSV();
+    assertEquals("[[RI, White,  $1,058.47 , 395773.6521,  $1.00 , 75%], [RI, Black,  $770.26 , 30424.80376,  $0.73 , 6%], [RI, Native American/American Indian,  $471.07 , 2315.505646,  $0.45 , 0%], [RI, Asian-Pacific Islander,  $1,080.09 , 18956.71657,  $1.02 , 4%], [RI, Hispanic/Latino,  $673.14 , 74596.18851,  $0.64 , 14%], [RI, Multiracial,  $971.89 , 8883.049171,  $0.92 , 2%]]",
+        secondResponse);
+  }
+
+  private void loadCSV(String csvPath) throws Exception {
+    // Load CSV data
+    this.source.loadCSV(csvPath);
+    this.csvData = this.source.getCSVData();
+  }
+
+  private String viewCSV() throws Exception {
+    // View CSV data
+    System.out.println(this.source.getCSVData().toString());
+    return this.source.getCSVData().toString();
+  }
 
   /**
    * This method tests whether LoadCSV in DataSource is able to load a CSV file
@@ -84,8 +130,4 @@ public class TestHandlers {
     this.tearDown();
   }
 
-  @Test
-  public void testLoadAndView() throws Exception {
-
-  }
 }
