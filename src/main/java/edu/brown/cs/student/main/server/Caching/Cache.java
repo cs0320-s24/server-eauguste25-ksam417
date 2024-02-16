@@ -10,8 +10,10 @@ import java.util.List;
 
 public class Cache {
   private LoadingCache<LocationData, List<String>> cache;
+
   BroadbandDataSource broadbandDataSource;
-  edu.brown.cs.student.main.Server.Caching.CacheConfigurator config;
+
+  CacheConfigurator config;
 
   // Constructor for the Cache class.
   // It initializes the cache with configurations and a data source for broadband data.

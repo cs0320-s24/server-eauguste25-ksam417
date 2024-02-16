@@ -4,30 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static spark.Spark.after;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
 import edu.brown.cs.student.main.CSV.Search;
-import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import spark.Spark;
-import spark.Request;
-import spark.Response;
 
 public class TestHandlers {
   private LoadHandler loadHandler;
@@ -159,7 +145,7 @@ public class TestHandlers {
    * @throws Exception
    */
   @Test
-  public void testLoadCSVFalse() throws Exception {
+  public void testLoadCSVFalse() {
     CSVDataSource data = new CSVDataSource();
     assertFalse(data.getLoadStatus());
   }
@@ -174,5 +160,9 @@ public class TestHandlers {
 
 
   //TODO: check an error
+  @Test
+  public void test() throws Exception {
+
+  }
 
 }

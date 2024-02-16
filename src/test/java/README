@@ -33,6 +33,20 @@ The packages are split into five main groups: CSV, Exceptions, Interfaces, Serve
     for the endpoints of the server, and the main Server class which runs the program and creates
     the server in the browser.
 
+-Caching
+    - The caching package utilizes two classes to integrate the Google Guave LoadingCache with developer accessible
+    configurations. The Cache class initializes the cache and sets it's values for size, expiration time, etc. It
+    also has a function to check if something if a locationdata object is in the cache, if it is return the cache contents,
+    if not then make an API request. The cache configuration class has multiple setter and getter methods that allow
+    for flexibility with expiration time and cache size depending on what the developer is looking for.
+-Handlers
+    -The Handlers package contains seperated functionality for the main operations of the project, Load, View, Search, and
+    Broadband. All of these classes implement the Spark Route interface. These classes all have different functionality
+    for their handling of requests and responses, but the main aspect is that they take in a query request from the server
+    and based on the query request they will create a responseMap object and output the relevant information depending
+    on if the information is present/valid. BroadBandHandler is a special case because unlike the others where they utilize
+    files, broadband connects to the ACS API and finds relevant information there. -
+
 - Test
   - The Testing package consists of three test files, one for testing CSV parsing, another for
     simple testing of the handler classes, and a third for testing the ACS data.
@@ -44,7 +58,8 @@ Design:
     searchcsv, and broadband. Loadcsv effectively "loads" a csv file so that it can be viewed or
     searched. This is where the parsing of the CSV file takes place. Viewcsv allows the user to view
     a loaded csv file in 2-dimensional JSON format. Searchcsv allows the user to search a loaded
-    csv file and displays the rows that match the search criteria in 2-dimensional JSON format.
+    csv file and displays the rows that match the search criteria in 2-dimensional JSON format. Broadband
+    connects to the ACS API and returns the percentage of internet bandwidth of a state,county location data pair.
 
 
 Instructions for Use:
