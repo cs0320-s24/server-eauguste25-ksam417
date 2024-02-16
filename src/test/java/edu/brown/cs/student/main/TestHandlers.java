@@ -70,9 +70,40 @@ public class TestHandlers {
   public void tearDown() {
   }
 
+  /**
+   * This method tests the interaction of loading one file and viewing it and then loading an
+   * entirely different file and viewing it
+   * @throws Exception
+   */
   @Test
-  public void testNoHeadersOnSecondLoad() throws Exception {
+  public void testDifferentLoadsAndViews() throws Exception {
     // View CSV (expecting headers)
+    this.setUp();
+
+    String firstResponse = viewCSV();
+    assertEquals("[[State, Data Type, Average Weekly Earnings, Number of Workers, Earnings Disparity, Employed Percent], [RI, White,  $1,058.47 , 395773.6521,  $1.00 , 75%], [RI, Black,  $770.26 , 30424.80376,  $0.73 , 6%], [RI, Native American/American Indian,  $471.07 , 2315.505646,  $0.45 , 0%], [RI, Asian-Pacific Islander,  $1,080.09 , 18956.71657,  $1.02 , 4%], [RI, Hispanic/Latino,  $673.14 , 74596.18851,  $0.64 , 14%], [RI, Multiracial,  $971.89 , 8883.049171,  $0.92 , 2%]]",
+        firstResponse);
+
+    // Load CSV without headers
+    loadCSV("/Users/ericauguste/Desktop/CS32/Projects/server-eauguste25-ksam417/data/test.csv");
+
+    // View CSV (expecting no headers)
+    String secondResponse = viewCSV();
+    assertEquals("[[Name, Age], [Eric, 21.0], [Javier, 22.0], [Auguste, 23.0]]",
+        secondResponse);
+    this.tearDown();
+  }
+
+  /**
+   * This method tests the functionality of loading one CSV file in setup, viewing that file, and
+   * then loading the same file without the header row and viewing that file by returning Strings
+   * of the CSV data
+   * @throws Exception
+   */
+  @Test
+  public void testCSVChangeWithMultipleLoads() throws Exception {
+    // View CSV (expecting headers)
+    this.setUp();
 
     String firstResponse = viewCSV();
     assertEquals("[[State, Data Type, Average Weekly Earnings, Number of Workers, Earnings Disparity, Employed Percent], [RI, White,  $1,058.47 , 395773.6521,  $1.00 , 75%], [RI, Black,  $770.26 , 30424.80376,  $0.73 , 6%], [RI, Native American/American Indian,  $471.07 , 2315.505646,  $0.45 , 0%], [RI, Asian-Pacific Islander,  $1,080.09 , 18956.71657,  $1.02 , 4%], [RI, Hispanic/Latino,  $673.14 , 74596.18851,  $0.64 , 14%], [RI, Multiracial,  $971.89 , 8883.049171,  $0.92 , 2%]]",
@@ -85,14 +116,25 @@ public class TestHandlers {
     String secondResponse = viewCSV();
     assertEquals("[[RI, White,  $1,058.47 , 395773.6521,  $1.00 , 75%], [RI, Black,  $770.26 , 30424.80376,  $0.73 , 6%], [RI, Native American/American Indian,  $471.07 , 2315.505646,  $0.45 , 0%], [RI, Asian-Pacific Islander,  $1,080.09 , 18956.71657,  $1.02 , 4%], [RI, Hispanic/Latino,  $673.14 , 74596.18851,  $0.64 , 14%], [RI, Multiracial,  $971.89 , 8883.049171,  $0.92 , 2%]]",
         secondResponse);
+    this.tearDown();
   }
 
+  /**
+   * Helper method for loading CSV data
+   * @param csvPath
+   * @throws Exception
+   */
   private void loadCSV(String csvPath) throws Exception {
     // Load CSV data
     this.source.loadCSV(csvPath);
     this.csvData = this.source.getCSVData();
   }
 
+  /**
+   * Helper method for viewing CSV data
+   * @return
+   * @throws Exception
+   */
   private String viewCSV() throws Exception {
     // View CSV data
     System.out.println(this.source.getCSVData().toString());
@@ -129,5 +171,8 @@ public class TestHandlers {
     assertNotNull(this.csvData);
     this.tearDown();
   }
+
+
+  //TODO: check an error
 
 }
