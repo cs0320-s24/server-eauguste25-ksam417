@@ -25,36 +25,87 @@ public class BroadbandDataSource {
     this.ensureStateCodesInitialized();
   }
 
+  /**
+   * Ensures that the list of state codes is initialized and populated. This synchronized method
+   * checks if the stateCodes list is null, indicating that it has not yet been initialized or
+   * populated. If it is null, it attempts to fetch the state codes by calling the getStateCodes
+   * method. If an exception occurs during the fetching process, it initializes stateCodes to an
+   * empty list to ensure that the list is not null, preventing NullPointerExceptions in future uses
+   * of stateCodes. This approach allows the class to handle failures gracefully by ensuring that
+   * stateCodes is always in a valid state for use, even if it means having an empty list when data
+   * retrieval fails.
+   *
+   * @throws DatasourceException if an error occurs while fetching the state codes. Note that if an
+   *     exception is caught, it is handled by initializing stateCodes to an empty list, and no
+   *     exception is thrown from the catch block. The original DatasourceException is not re-thrown
+   *     or propagated outside of this method.
+   */
   private synchronized void ensureStateCodesInitialized() throws DatasourceException {
+    // Check if stateCodes is null, indicating that it has not been initialized.
     if (this.stateCodes == null) {
       try {
+        // Attempt to fetch the state codes using the getStateCodes method.
+        // This method itself may throw a DatasourceException if it encounters issues.
         this.getStateCodes();
       } catch (DatasourceException e) {
-        // Handle the exception (e.g., log it) or set a default value for stateCodes
+        // If fetching the state codes fails, initialize stateCodes to an empty list.
+        // This ensures that stateCodes is never null, avoiding NullPointerExceptions
+        // and allowing other methods to safely check the size or iterate over stateCodes
+        // without additional null checks.
         this.stateCodes = new ArrayList<>();
       }
     }
   }
 
   /**
-   * This method reads the JSON list of string containing state and code.
+   * Fetches a list of U.S. states and their corresponding codes from a Census Bureau API endpoint.
+   * This method constructs a URL to query the Census Bureau's API for a list of state names and
+   * codes, leveraging the 2010 Decennial SF1 data. It uses the Moshi library to parse the JSON
+   * response into a Java List of Lists, where each inner List contains two elements: the state name
+   * and its code. This method assumes a stable internet connection and that the API endpoint
+   * remains unchanged and available.
    *
-   * @return
-   * @throws DatasourceException
+   * @return A List of Lists, where each inner List contains a String for the state name and another
+   *     for its code.
+   * @throws DatasourceException if there's an error during the HTTP request or if the JSON response
+   *     cannot be correctly parsed, indicating either a problem with the connection, the API, or
+   *     the data format.
    */
   private List<List<String>> getStateCodes() throws DatasourceException {
     try {
+      // Construct the URL for the Census API request targeting state names and codes.
       URL requestURL =
           new URL("https", "api.census.gov", "/data/2010/dec/sf1?get=NAME&for=state:*");
+
+      // Open a connection to the specified URL using a helper method to configure and initiate the
+      // HTTP request.
       HttpURLConnection clientConnection = connect(requestURL);
+
+      // Initialize the Moshi JSON parser library with a new instance.
       Moshi moshi = new Moshi.Builder().build();
+
+      // Create a JsonAdapter instance for parsing the JSON response into a List structure. The use
+      // of .nonNull()
+      // ensures that null values are not accepted, reducing the risk of NullPointerExceptions.
       JsonAdapter<List> adapter = moshi.adapter(List.class).nonNull();
-      // NOTE: important! pattern for handling the input stream
+
+      // Parse the JSON response from the API into the stateCodes list, ensuring data is read
+      // correctly from the input stream.
       this.stateCodes = adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+
+      // Properly disconnect the HTTP connection to free up network resources.
       clientConnection.disconnect();
+
+      // Check if the stateCodes list is empty, which could indicate an issue with the API response,
+      // and throw an exception.
       if (this.stateCodes.isEmpty()) throw new DatasourceException("Malformed response from NWS");
+
+      // Return the successfully parsed list of state names and codes.
       return this.stateCodes;
     } catch (IOException e) {
+      // Catch any IOExceptions thrown during the connection or reading process and wrap them in a
+      // DatasourceException,
+      // providing the caller with a clear indication that data retrieval failed.
       throw new DatasourceException(e.getMessage());
     }
   }
@@ -62,13 +113,14 @@ public class BroadbandDataSource {
   public List<List<String>> returnStateCounties(String stateCode) throws DatasourceException {
     try {
       // Construct the URL for the API request using the specified state code.
-      // This URL is for the 2021 ACS 1-year estimates, retrieving data for all counties within the specified state.
+      // This URL is for the 2021 ACS 1-year estimates, retrieving data for all counties within the
+      // specified state.
       URL requestURL =
-              new URL(
-                      "https",
-                      "api.census.gov",
-                      "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:"
-                              + stateCode);
+          new URL(
+              "https",
+              "api.census.gov",
+              "/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:*&in=state:"
+                  + stateCode);
 
       // Establish a connection to the URL and return a HttpURLConnection object.
       HttpURLConnection clientConnection = connect(requestURL);
@@ -81,9 +133,10 @@ public class BroadbandDataSource {
       JsonAdapter<List> adapter = moshi.adapter(List.class).nonNull();
 
       // Use the JsonAdapter to parse the JSON response from the API into a List of Lists.
-      // Each inner list represents a county's data, including its name and the specified variable (S2802_C03_022E).
+      // Each inner list represents a county's data, including its name and the specified variable
+      // (S2802_C03_022E).
       List<List<String>> countyList =
-              adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
+          adapter.fromJson(new Buffer().readFrom(clientConnection.getInputStream()));
 
       // Disconnect the HttpURLConnection after the data has been retrieved.
       clientConnection.disconnect();
@@ -104,38 +157,62 @@ public class BroadbandDataSource {
   }
 
   /**
-   * This method takes the stateName to search through the api for state to stateCode.
+   * Searches for a given state name in the pre-fetched list of state names and codes, returning the
+   * corresponding state code if found. This method iterates through the list of state codes
+   * (assumed to be previously retrieved and stored in a class field) to find a match for the
+   * provided state name. If a match is found, the corresponding state code is returned. If no match
+   * is found, a DatasourceException is thrown indicating that the state name could not be found.
    *
-   * @param stateName
-   * @return
-   * @throws DatasourceException
+   * @param stateName The name of the state for which the code is to be retrieved.
+   * @return The code of the state if found.
+   * @throws DatasourceException if the state name is not found in the list of state codes,
+   *     indicating either an incomplete or incorrect dataset.
    */
   public String returnStateName(String stateName) throws DatasourceException {
+    // Initialize a placeholder for the state code. '*' is used to indicate that no match has been
+    // found yet.
     String stateCode = "*";
+
+    // Iterate through the list of state codes. This list is assumed to be a class field
+    // previously populated with state names and their corresponding codes.
     for (int i = 0; i < this.stateCodes.size(); i++) {
+      // Check if the current entry's state name matches the provided state name.
       if (this.stateCodes.get(i).get(0).equals(stateName)) {
+        // If a match is found, update stateCode with the corresponding state code.
         stateCode = this.stateCodes.get(i).get(1);
+        // Once the match is found, there's no need to continue the loop.
+        break; // This break statement optimizes the loop by exiting once a match is found.
       }
     }
-    if (stateCode != "*") {
+
+    // Check if a state code was found (i.e., stateCode no longer holds the initial placeholder
+    // value).
+    if (!stateCode.equals("*")) {
+      // Return the found state code.
       return stateCode;
     } else {
+      // If no state code was found (stateCode is still '*'), throw an exception indicating the
+      // state was not found.
       throw new DatasourceException("State not found");
     }
   }
 
-  // This method attempts to find a county's code by its name from a provided list of county information.
-// Each entry in the countyList is expected to be a list of strings containing county details.
+  // This method attempts to find a county's code by its name from a provided list of county
+  // information.
+  // Each entry in the countyList is expected to be a list of strings containing county details.
   public String returnCountyCode(List<List<String>> countyList, String countyName)
-          throws DatasourceException {
-    // Initializes a default stateCode value to "*" which will be used to indicate if the county's code has been found.
+      throws DatasourceException {
+    // Initializes a default stateCode value to "*" which will be used to indicate if the county's
+    // code has been found.
     String stateCode = "*";
 
     // Iterate over each list (representing a county's information) within the countyList.
     for (List<String> strings : countyList) {
-      // Extracts the full name (which may include the state and other details, separated by commas) of the county.
+      // Extracts the full name (which may include the state and other details, separated by commas)
+      // of the county.
       String name = strings.get(0);
-      // Splits the name by comma to separate components like county name, state, etc., and stores them in a list.
+      // Splits the name by comma to separate components like county name, state, etc., and stores
+      // them in a list.
       List<String> parts = Arrays.asList(name.split(","));
       // Check if the first part (assumed to be the county name) matches the countyName argument.
       if (parts.get(0).equals(countyName)) {
@@ -254,12 +331,14 @@ public class BroadbandDataSource {
   }
 
   // Attempts to establish a connection to a specified URL and ensures it's an HTTP connection.
-// This method is designed to be used internally and is static, meaning it can be called without an instance of the class.
+  // This method is designed to be used internally and is static, meaning it can be called without
+  // an instance of the class.
   private static HttpURLConnection connect(URL requestURL) throws DatasourceException, IOException {
     // Opens a connection to the specified URL and stores it in urlConnection.
     URLConnection urlConnection = requestURL.openConnection();
     // Checks if the opened connection is an instance of HttpURLConnection.
-    // If not, it throws a DatasourceException indicating that the expected HTTP connection type was not received.
+    // If not, it throws a DatasourceException indicating that the expected HTTP connection type was
+    // not received.
     if (!(urlConnection instanceof HttpURLConnection))
       throw new DatasourceException("unexpected: result of connection wasn't HTTP");
     // Casts the URLConnection to HttpURLConnection after confirming its instance type.
@@ -270,9 +349,10 @@ public class BroadbandDataSource {
     // If the response code is not 200, it throws a DatasourceException with the HTTP error message.
     if (clientConnection.getResponseCode() != 200) {
       throw new DatasourceException(
-              "unexpected: API connection not success status " + clientConnection.getResponseMessage());
+          "unexpected: API connection not success status " + clientConnection.getResponseMessage());
     }
-    // Returns the established HttpURLConnection if successful, allowing for further operations such as reading the response.
+    // Returns the established HttpURLConnection if successful, allowing for further operations such
+    // as reading the response.
     return clientConnection;
   }
 }

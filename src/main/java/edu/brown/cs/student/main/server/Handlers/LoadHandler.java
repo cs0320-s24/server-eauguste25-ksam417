@@ -38,10 +38,6 @@ public class LoadHandler implements Route {
     this.source = source;
   }
 
-  // get the name of the filepath you are searching for
-  // update variable in search class
-  // the only thing that changes for view would be dependent on the filepath
-  // load would update and view and search would use the information from that variable
 
   /**
    * Handles the loading of a CSV file, making sure that it is able to be parsed
