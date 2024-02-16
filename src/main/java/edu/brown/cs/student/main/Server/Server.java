@@ -2,8 +2,8 @@ package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.CSV.DataSource.BroadbandDataSource;
 import edu.brown.cs.student.main.CSV.DataSource.CSVDataSource;
-import edu.brown.cs.student.main.Interfaces.ACSDataSource;
 import edu.brown.cs.student.main.Server.Handlers.BroadbandHandler;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
@@ -25,7 +25,7 @@ public class Server {
   private String columnIdentifier;
   private int columnIndex;
   private List<List<String>> parsedData;
-  private static ACSDataSource ACSData;
+  private static BroadbandDataSource broadbandDataSource;
 
   public Server(String[] args) {
     this.args = args;
@@ -57,7 +57,7 @@ public class Server {
       Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
       /** Endpoint which sends back rows matching the given search criteria. */
       Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
-      Spark.get("broadband", new BroadbandHandler(ACSData));
+      Spark.get("broadband", new BroadbandHandler(broadbandDataSource));
       Spark.init();
       Spark.awaitInitialization();
     } catch (Exception e) {

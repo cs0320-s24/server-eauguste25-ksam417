@@ -3,14 +3,13 @@ package edu.brown.cs.student.main.Server.Handlers;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+import edu.brown.cs.student.main.CSV.DataSource.BroadbandDataSource;
 import edu.brown.cs.student.main.Exceptions.DatasourceException;
-import edu.brown.cs.student.main.Interfaces.ACSDataSource;
-import edu.brown.cs.student.main.csv.Records.ACSData;
-import edu.brown.cs.student.main.csv.Records.LocationData;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -24,10 +23,10 @@ import spark.Route;
  */
 public class BroadbandHandler implements Route {
 
-  private final ACSDataSource state;
+  private final BroadbandDataSource broadbandDataSource;
 
-  public BroadbandHandler(ACSDataSource state) {
-    this.state = state;
+  public BroadbandHandler(BroadbandDataSource broadbandDataSource) {
+    this.broadbandDataSource = broadbandDataSource;
   }
 
   @Override
@@ -46,28 +45,25 @@ public class BroadbandHandler implements Route {
     Map<String, Object> responseMap = new HashMap<>();
 
     try {
-      LocationData locationData = new LocationData(state, county);
-
-      ACSData data = this.state.getPercent(locationData);
-      String percent = data.percent();
-
       if (state == null || county == null) {
         responseMap.put("type", "error");
         responseMap.put("errorType", "missing parameter");
+      } else {
+        List<String> data = this.broadbandDataSource.getInternetAccess(state, county);
+        responseMap.put("type", "success");
+        responseMap.put("Date/Time", timeFormatter.format(requestTime));
+
+        /** Probably going to change this formatting when it is working* */
+        responseMap.put("Bandwith data: ", data);
+
+        return adapter.toJson(responseMap);
       }
-
-      responseMap.put("type", "success");
-      responseMap.put("Date/Time", timeFormatter.format(requestTime));
-
-      /** Probably going to change this formatting when it is working* */
-      responseMap.put("County: " + county + ", State: " + state + "percentage", percent);
-
-      return adapter.toJson(responseMap);
     } catch (DatasourceException e) {
       responseMap.put("type", "error");
       responseMap.put("errorType", "datasource");
       responseMap.put("details", e.getMessage());
       return adapter.toJson(responseMap);
     }
+    return adapter.toJson(responseMap);
   }
 }
