@@ -11,12 +11,10 @@ import edu.brown.cs.student.main.CSV.Search;
 import edu.brown.cs.student.main.Server.Handlers.LoadHandler;
 import edu.brown.cs.student.main.Server.Handlers.SearchHandler;
 import edu.brown.cs.student.main.Server.Handlers.ViewHandler;
-import java.io.FileNotFoundException;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testng.Assert;
 
 public class TestHandlers {
   private LoadHandler loadHandler;
@@ -171,9 +169,12 @@ public class TestHandlers {
    */
   @Test
   public void testLoadNotCSV() throws Exception {
-    Exception exception = assertThrows(Exception.class, () -> {
-      loadCSV("hello");
-    });
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () -> {
+              loadCSV("hello");
+            });
     String expectedMessage = "hello (No such file or directory)";
     String actualMessage = exception.getMessage();
     assertEquals(expectedMessage, actualMessage);

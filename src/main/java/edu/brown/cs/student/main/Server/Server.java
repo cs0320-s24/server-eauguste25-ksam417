@@ -17,8 +17,6 @@ import spark.Spark;
  */
 public class Server {
   private String[] args;
-  // private static BroadbandDataSource broadbandDataSource;
-
   public Server(String[] args) {
     this.args = args;
   }
@@ -48,6 +46,7 @@ public class Server {
       Spark.get("viewcsv", new ViewHandler(testLoadHandler, testLoadHandler.getSource()));
       /** Endpoint which sends back rows matching the given search criteria. */
       Spark.get("searchcsv", new SearchHandler(testLoadHandler, testLoadHandler.getSource()));
+      /** Endpoint for retrieving data from ACS API */
       Spark.get("broadband", new BroadbandHandler());
       Spark.init();
       Spark.awaitInitialization();

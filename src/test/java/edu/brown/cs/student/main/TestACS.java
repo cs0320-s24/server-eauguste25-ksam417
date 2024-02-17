@@ -26,8 +26,7 @@ import spark.Spark;
 
 public class TestACS {
 
-  public TestACS() throws DatasourceException {
-  }
+  public TestACS() throws DatasourceException {}
 
   @BeforeAll
   public static void setupOnce() {
@@ -66,6 +65,7 @@ public class TestACS {
 
   /**
    * Tests a mock data source with the ACS API
+   *
    * @throws DatasourceException
    */
   @Test
@@ -86,26 +86,25 @@ public class TestACS {
   }
 
   /**
-   * Tests whether an error is thrown when an invalid request is made to the API in the form of
-   * an incorrect state name
+   * Tests whether an error is thrown when an invalid request is made to the API in the form of an
+   * incorrect state name
+   *
    * @throws DatasourceException
    */
-
   @Test
   public void testInvalidAPIResponse() throws DatasourceException {
     BroadbandDataSource data = new BroadbandDataSource();
 
     // Assuming you have a method to make API requests
     // Ensure that your application handles the invalid response gracefully
-    assertThrows(DatasourceException.class, () ->
-        data.returnStateName("Greece"));
+    assertThrows(DatasourceException.class, () -> data.returnStateName("Greece"));
   }
 
   /**
    * Tests calls on csv files and calls to the API at the same time
+   *
    * @throws Exception
    */
-
   @Test
   public void testCSVAndACSHandling() throws Exception {
     MockDataSource1 mockDataSource = new MockDataSource1();
@@ -125,5 +124,4 @@ public class TestACS {
     // Compare the actual result with the expected result
     assertEquals(expected, result);
   }
-
 }
